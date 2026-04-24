@@ -1,0 +1,754 @@
+# FOLD 3 — MANIFESTO / POSICIONAMENTO | Adega Própria Landing Page
+
+---
+
+## Role & Design Philosophy
+
+You are a senior UI designer and frontend developer building the **manifesto fold** of the Adega Própria landing page — the brand's soul section. This is NOT a feature list. This is NOT a "what we do" section. This is a **declaration** — the kind of editorial composition you'd find in a Tenuta Luce or Kettmeir website, where the brand speaks in its own voice about what it stands for.
+
+This fold is a **pause for soul, not conversion.** There is no CTA here (CTAs live in Folds 1, 4, 6, 8, 9). The job of this fold is to build emotional depth and brand credibility — to make the visitor slow down, feel the weight of the proposition, and believe that Adega Própria is the real thing.
+
+Build a premium, **wine-dark** editorial manifesto that sells the brand's philosophy: origin, exclusivity, label personalization, and winery credibility. Four declarations, each poetic, each visually weighted, arranged in an asymmetric editorial composition that feels like a luxury magazine spread — not a SaaS landing page.
+
+**The darkness is wine-red, not green.** Canvas is `#1A0F10`. Shadow layer is `#2A1416`. Warm depths are `#8C3D20` and `#A62C21`. Gold and beige whisper only as text, italic emphasis, thin decorative lines, and precious metadata. Never green. Never bright. Never loud.
+
+**Reference energy for this specific fold:**
+- **Kettmeir** — typographic elegance, the way text and photography coexist with generous whitespace
+- **Tenuta Luce** — italic serif restraint, values-driven declarations ("Rispetto per la terra, per la bellezza, per le persone")
+- **Pasqua** — manifesto boldness, chapter-based storytelling energy
+
+**Design mandates (non-negotiable):**
+- No emoji icons. No generic gradients. No inline styles (except for complex radial gradients Tailwind cannot express).
+- No placeholder images except dark, moody Unsplash wine photography with heavy dark overlay treatments.
+- Typography must be intentional — continue the Fraunces + DM Sans pairing established in Fold 1.
+- Every element must feel like it belongs in an Awwwards-winning editorial.
+- Mobile-first: design for 375px, then enhance for desktop.
+- The fold must pass the "screenshot test" — if posted on Dribbble, it receives genuine engagement.
+
+---
+
+## Tech Stack (imports for this fold)
+
+```jsx
+import { useState, useEffect, useRef } from "react";
+import { motion, useScroll, useTransform, useInView } from "framer-motion";
+```
+
+No shadcn components required for this fold — it's pure editorial composition. No Lucide icons either (the fold is intentionally icon-free — icons would break the editorial tone).
+
+**Google Fonts import** (place at the top of the file, inside a `<style>` block rendered by the component):
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap');
+```
+
+---
+
+## Design Tokens (Master Briefing — Wine-Red Dark Palette)
+
+Continuing the established design system from Fold 1. **Primary canvas is wine-black, never green.**
+
+```
+DARK DOMINANT TONES (85%+ of visual space):
+  Canvas (primary):    bg-[#1A0F10]       ← deep wine-black base
+  Shadow layer:        bg-[#2A1416]       ← dark red-black, surface elevation, image frames
+  Warm depth:          bg-[#8C3D20]       ← reddish brown, gradient mid-tones, warmth washes
+  Emotional depth:     bg-[#A62C21]       ← deep wine red, atmospheric glows, seam highlights
+
+ACCENT TONES (sparse — 10-15% of visual space, never large fills):
+  Gold:                text-[#BF8C60] / border-[#BF8C60]
+  Warm beige:          text-[#D9BBA9]
+
+TEXT HIERARCHY:
+  Display headlines:   text-[#D9BBA9]     ← full opacity for the manifesto headline
+  Italic emphasis:     text-[#BF8C60]     ← gold, one emphasis word per declaration
+  Body prose:          text-[#D9BBA9]/75
+  Muted metadata:      text-[#D9BBA9]/50
+  Micro/eyebrow:       text-[#BF8C60]/80  ← "MANIFESTO" label, numbered markers
+  Whisper text:        text-[#D9BBA9]/40  ← coordinates, vintage year metadata
+
+BORDERS (felt more than seen):
+  Near-invisible gold: border-[#BF8C60]/10
+  Clay warmth border: border-[#8C3D20]/20
+  Soft beige divider: border-[#D9BBA9]/5
+
+ATMOSPHERIC GLOW OPACITY (Master rule: 0.04 – 0.10 MAX):
+  Wine-red ambient bloom (top):     rgba(166,44,33,0.07)
+  Clay warmth wash (mid-right):     rgba(140,61,32,0.05)
+  Gold accent glow (near headline): rgba(191,140,96,0.05)
+
+DECORATIVE HAIRLINES:
+  Section top:         bg-gradient-to-r from-transparent via-[#BF8C60]/20 to-transparent
+  Vertical dividers:   bg-gradient-to-b from-transparent via-[#BF8C60]/15 to-transparent
+```
+
+**Visual Weight Distribution — MANDATORY (from Master):**
+- `#1A0F10` → **45–55%** of visual space
+- `#2A1416` → **20–25%**
+- `#8C3D20` → **12–18%**
+- `#A62C21` → **8–12%**
+- `#BF8C60` → **5–8% maximum**
+- `#D9BBA9` → **text and subtle detail only**
+
+---
+
+## Layout Architecture
+
+The fold is a **full-width editorial spread** with generous vertical rhythm. Section padding: `py-24 md:py-32 lg:py-40`. No `min-h-screen` constraint — this fold is content-sized, let it breathe naturally.
+
+Root: `<section id="fold-3" className="relative w-full overflow-hidden bg-[#1A0F10] py-24 md:py-32 lg:py-40">`
+
+### Vertical Structure (top → bottom):
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│  [HAIRLINE TOP]  Gold gradient seam from previous fold          │
+│                                                                   │
+│  [MANIFESTO LABEL]  "— MANIFESTO —" eyebrow centered             │
+│                                                                   │
+│  [MASTER HEADLINE]  Large Fraunces serif, italic emphasis word  │
+│  [INTRO PROSE]  Short declarative paragraph (center or left)    │
+│                                                                   │
+│  ══════════════════════════════════════════════════════════════  │
+│  (asymmetric editorial grid begins)                              │
+│                                                                   │
+│  DECLARATION I — ORIGEM                                          │
+│   [Editorial image 1 — vineyard/terroir]  [Text block offset]   │
+│                                                                   │
+│  DECLARATION II — EXCLUSIVIDADE                                  │
+│   [Text block offset]  [Editorial image 2 — bottles/label]      │
+│                                                                   │
+│  DECLARATION III — PERSONALIZAÇÃO                                │
+│   [Editorial image 3 — closeup of label/bottle]  [Text block]   │
+│                                                                   │
+│  DECLARATION IV — CREDIBILIDADE (no image, full-width prose)    │
+│   [Closing declaration, Fraunces italic, centered]              │
+│                                                                   │
+│  [SIGNATURE LINE]  "— Adega Própria" in gold Fraunces italic    │
+│  [HAIRLINE BOTTOM]  Gold gradient seam to next fold              │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### Grid System
+
+**Desktop (`lg:` and up):**
+- Root container: `max-w-7xl mx-auto px-6 lg:px-12`
+- Master intro block: `max-w-5xl mx-auto text-center` — centered, dominant
+- Declaration blocks: 12-column grid (`grid grid-cols-12 gap-8 lg:gap-16`) with asymmetric column spans
+  - **Declaration I:** Image spans `col-span-7`, Text spans `col-span-5 col-start-8`
+  - **Declaration II:** Text spans `col-span-5`, Image spans `col-span-6 col-start-7`
+  - **Declaration III:** Image spans `col-span-6`, Text spans `col-span-5 col-start-8`
+  - The alternating image/text sides create editorial rhythm — never predictable, never a perfect grid
+- Vertical spacing between declarations: `mt-24 lg:mt-40` (generous, declarative pace)
+- Each declaration: image and text are NOT vertically aligned — offset them with `pt-12 lg:pt-24` on alternating sides to create organic asymmetry
+
+**Mobile (default, 375px baseline):**
+- Single column vertical flow
+- Image on top, text below, for every declaration
+- Image aspect ratio: `aspect-[4/5]` — portrait, editorial feel
+- Section padding: `px-6 py-20`
+- Vertical spacing between declarations: `mt-16`
+
+---
+
+## Content Map (all text in Brazilian Portuguese)
+
+### 1. Section Label ("— MANIFESTO —")
+
+```
+— MANIFESTO —
+```
+
+- Font: DM Sans, weight 500
+- Size: `text-[10px] sm:text-xs`
+- Tracking: `tracking-[0.4em]`
+- Transform: `uppercase`
+- Color: `text-[#BF8C60]/80`
+- Alignment: `text-center`
+- The em-dashes are literal characters flanking the word
+- Margin: `mb-8 lg:mb-12`
+
+### 2. Master Headline (the manifesto declaration)
+
+```
+Para quem deseja mais do que uma garrafa — mas uma herança.
+```
+
+- Font: Fraunces, weight 400 (a step lighter than Fold 1's weight 700 — this is prose, not a bold declaration)
+- Size: `text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl`
+- Color: `text-[#D9BBA9]`
+- Line height: `leading-[1.05]` — slightly looser than Fold 1, giving prose room to breathe
+- Letter spacing: `tracking-[-0.015em]`
+- Alignment: `text-center`
+- Max width: `max-w-[20ch] sm:max-w-[24ch] lg:max-w-4xl mx-auto`
+
+**Critical typographic detail — GOLD ITALIC WORD:** The word **"herança"** must be rendered in:
+- Fraunces *italic*
+- Color: `text-[#BF8C60]` (gold)
+- Wrap in `<span className="italic text-[#BF8C60]">herança</span>`
+- This continues the Tenuta Luce technique established in Fold 1 — visual consistency across the page
+
+### 3. Intro Prose (beneath master headline)
+
+```
+Nascemos da convicção de que vinhos extraordinários merecem nomes extraordinários. Trabalhamos lado a lado com as vinícolas mais respeitadas da Serra Gaúcha para que cada marca que criamos carregue verdade de origem — não apenas um rótulo bonito, mas um vinho de caráter.
+```
+
+- Font: DM Sans, weight 300 (light)
+- Size: `text-sm sm:text-base lg:text-lg`
+- Color: `text-[#D9BBA9]/70`
+- Line height: `leading-relaxed`
+- Alignment: `text-center`
+- Max width: `max-w-2xl mx-auto`
+- Margin: `mt-6 lg:mt-8`
+
+### 4. Decorative Hairline (between intro and declarations)
+
+A gold hairline marks the transition from the master statement into the four declarations:
+
+- `w-16 h-px mx-auto mt-16 lg:mt-24 bg-gradient-to-r from-transparent via-[#BF8C60]/40 to-transparent`
+
+### 5. DECLARATION I — ORIGEM
+
+**Image:** An atmospheric vineyard/terroir shot (Serra Gaúcha landscape, vine rows, morning mist).
+
+**Numbered marker:** `I`
+- Font: Fraunces italic, weight 300
+- Size: `text-5xl lg:text-7xl`
+- Color: `text-[#BF8C60]/60`
+- Positioned above the declaration title, loose
+
+**Declaration title:**
+```
+Origem que se prova no paladar
+```
+- Font: Fraunces, weight 400
+- Size: `text-2xl sm:text-3xl lg:text-4xl`
+- Color: `text-[#D9BBA9]`
+- Line height: `leading-tight`
+- Letter spacing: `tracking-[-0.01em]`
+
+**Declaration body:**
+```
+Serra Gaúcha, onde a altitude e o clima desenham vinhos de caráter único. Nossos parceiros são vinícolas premiadas que cultivam uvas nobres há gerações — cada garrafa carrega essa história antes mesmo de carregar o seu nome.
+```
+- Font: DM Sans, weight 400
+- Size: `text-sm lg:text-base`
+- Color: `text-[#D9BBA9]/70`
+- Line height: `leading-relaxed`
+- Max width: `max-w-md`
+
+**Metadata line (whisper text beneath body):**
+```
+SERRA GAÚCHA · RS · 29°10'S 51°31'W
+```
+- Font: DM Sans, weight 500
+- Size: `text-[10px] lg:text-xs`
+- Tracking: `tracking-[0.25em]`
+- Transform: `uppercase`
+- Color: `text-[#D9BBA9]/40`
+- Margin: `mt-6`
+- This is the Kettmeir geographic-coordinate technique — adds credibility and territorial authenticity
+
+### 6. DECLARATION II — EXCLUSIVIDADE
+
+**Image:** Wine bottles in ambient cellar light — moody, dark, premium.
+
+**Numbered marker:** `II`
+(Same styling as Declaration I marker)
+
+**Declaration title:**
+```
+Raridade por natureza
+```
+
+**Declaration body:**
+```
+Produzimos em pequenos lotes a partir de apenas sessenta garrafas. Sua marca não será uma entre mil — será única, finita, pensada para quem compreende que valor se mede em presença, não em abundância.
+```
+
+**Metadata line:**
+```
+LOTE MÍNIMO · 60 GARRAFAS · PRODUÇÃO LIMITADA
+```
+
+### 7. DECLARATION III — PERSONALIZAÇÃO
+
+**Image:** Close-up of a wine bottle label — elegant, dark, luxurious. Or an artful shot of a bottle being hand-labeled.
+
+**Numbered marker:** `III`
+
+**Declaration title:**
+```
+Seu nome, sua identidade, seu vinho
+```
+
+**Declaration body:**
+```
+Cuidamos de cada detalhe do rótulo à entrega — do design à impressão, da escolha do papel à curadoria dos vinhos. O resultado é uma marca que parece sempre ter existido, porque foi construída com o tempo e o rigor que uma marca premium merece.
+```
+
+**Metadata line:**
+```
+RÓTULO · ENGARRAFAMENTO · ENTREGA
+```
+
+### 8. DECLARATION IV — CREDIBILIDADE (closing, no image, full-width prose)
+
+This final declaration has no image. It's a full-width, center-aligned closing statement that feels like the signature line of a brand manifesto. This is the emotional payoff of the fold.
+
+**Numbered marker:** `IV`
+- Centered above the closing statement
+- Same styling as others
+
+**Closing declaration:**
+```
+Não criamos rótulos. Construímos marcas que merecem durar.
+```
+- Font: Fraunces *italic*, weight 400
+- Size: `text-3xl sm:text-4xl md:text-5xl lg:text-6xl`
+- Color: `text-[#D9BBA9]`
+- Line height: `leading-[1.1]`
+- Letter spacing: `tracking-[-0.015em]`
+- Alignment: `text-center`
+- Max width: `max-w-[22ch] sm:max-w-[28ch] lg:max-w-4xl mx-auto`
+- Margin: `mt-24 lg:mt-40`
+
+**Gold accent:** The word **"marcas"** in this closing statement should be in `text-[#BF8C60]` (gold), maintaining its italic inheritance.
+
+### 9. Signature Line (beneath closing declaration)
+
+```
+— Adega Própria
+```
+- Font: Fraunces italic, weight 300
+- Size: `text-lg lg:text-xl`
+- Color: `text-[#BF8C60]/80`
+- Alignment: `text-center`
+- Margin: `mt-10 lg:mt-14`
+
+### 10. Bottom Hairline (decorative seam to next fold)
+
+- `w-full h-px mt-24 lg:mt-40 bg-gradient-to-r from-transparent via-[#BF8C60]/20 to-transparent`
+
+---
+
+## Component Breakdown (DOM hierarchy)
+
+```
+<section id="fold-3">  ← Root: relative, w-full, overflow-hidden, bg-[#1A0F10], py-24 md:py-32 lg:py-40
+  │
+  ├── <div>  ← Atmospheric layer: absolute inset-0, pointer-events-none
+  │   ├── <div>  ← Wine-red ambient bloom (top)
+  │   ├── <div>  ← Clay warmth wash (mid-right)
+  │   └── <div>  ← Gold accent glow (near headline)
+  │
+  ├── <svg>  ← Grain texture overlay (feTurbulence, opacity 0.03, mix-blend-overlay)
+  │
+  ├── <div>  ← Top hairline (gold gradient seam)
+  │
+  ├── <div>  ← Main content: relative z-10, max-w-7xl mx-auto px-6 lg:px-12
+  │   │
+  │   ├── <motion.p>    ← "— MANIFESTO —" section label
+  │   │
+  │   ├── <motion.h2>   ← Master headline with italic gold "herança"
+  │   │
+  │   ├── <motion.p>    ← Intro prose
+  │   │
+  │   ├── <div>         ← Decorative hairline (short, centered)
+  │   │
+  │   ├── <article>     ← DECLARATION I: grid grid-cols-1 lg:grid-cols-12
+  │   │   ├── <motion.figure>  ← Image 1 (vineyard)
+  │   │   │   ├── <img>
+  │   │   │   └── <div>  ← Dark overlay
+  │   │   └── <motion.div>  ← Text block I
+  │   │       ├── <span>    ← Roman numeral "I"
+  │   │       ├── <h3>      ← Declaration title
+  │   │       ├── <p>       ← Body prose
+  │   │       └── <p>       ← Metadata coordinates
+  │   │
+  │   ├── <article>     ← DECLARATION II (reverse layout)
+  │   │   ├── <motion.div>  ← Text block II (appears first in source, grid reorders)
+  │   │   └── <motion.figure>  ← Image 2 (bottles in cellar)
+  │   │
+  │   ├── <article>     ← DECLARATION III (image-left again)
+  │   │   ├── <motion.figure>  ← Image 3 (label closeup)
+  │   │   └── <motion.div>  ← Text block III
+  │   │
+  │   ├── <motion.div>  ← DECLARATION IV: no image, centered italic closing
+  │   │   ├── <span>    ← "IV" numeral
+  │   │   └── <p>       ← Closing declaration (italic, "marcas" in gold)
+  │   │
+  │   └── <motion.p>    ← Signature line "— Adega Própria"
+  │
+  └── <div>  ← Bottom hairline (gold gradient seam)
+```
+
+---
+
+## Animation & Motion Specification
+
+This fold uses **scroll-triggered entrance animations** (unlike Fold 1's load-triggered entrance). Elements animate in as they enter the viewport, creating a narrative pace as the visitor reads the manifesto.
+
+### Scroll-Triggered Pattern
+
+Use Framer Motion's `useInView` hook on a ref for each animated element:
+
+```jsx
+const ref = useRef(null);
+const isInView = useInView(ref, { once: true, amount: 0.3 });
+```
+
+`amount: 0.3` means the animation triggers when 30% of the element is in view. `once: true` ensures it only animates once per page visit.
+
+Apply via:
+```jsx
+<motion.div
+  ref={ref}
+  initial={{ opacity: 0, y: 40 }}
+  animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 40 }}
+  transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
+>
+```
+
+The easing `[0.22, 1, 0.36, 1]` is the project's signature cubic-bezier — consistent with Fold 1.
+
+### Element-by-Element Animation
+
+| Element | Initial | Animate (on inView) | Duration | Delay |
+|---|---|---|---|---|
+| "— MANIFESTO —" label | `opacity: 0, y: 20` | `opacity: 1, y: 0` | 700ms | 0ms |
+| Master headline | `opacity: 0, y: 40` | `opacity: 1, y: 0` | 1000ms | 150ms |
+| Intro prose | `opacity: 0, y: 25` | `opacity: 1, y: 0` | 800ms | 350ms |
+| Short hairline | `scaleX: 0` | `scaleX: 1` | 900ms | 550ms |
+| **Per declaration (scroll-triggered individually):** | | | | |
+| Image | `opacity: 0, scale: 1.05` | `opacity: 1, scale: 1` | 1200ms | 0ms |
+| Roman numeral | `opacity: 0, x: -20` | `opacity: 1, x: 0` | 700ms | 100ms |
+| Declaration title | `opacity: 0, y: 30` | `opacity: 1, y: 0` | 800ms | 200ms |
+| Declaration body | `opacity: 0, y: 20` | `opacity: 1, y: 0` | 700ms | 350ms |
+| Metadata line | `opacity: 0` | `opacity: 1` | 600ms | 550ms |
+| **Closing declaration (IV):** | | | | |
+| "IV" numeral | `opacity: 0, y: 20` | `opacity: 1, y: 0` | 700ms | 0ms |
+| Closing italic prose | `opacity: 0, y: 40` | `opacity: 1, y: 0` | 1100ms | 200ms |
+| Signature "— Adega Própria" | `opacity: 0, y: 15` | `opacity: 1, y: 0` | 700ms | 500ms |
+
+### Image Scale Effect (subtle parallax)
+
+Each editorial image has a subtle scale-in effect. On inView, the image scales from `1.05` to `1.0` over 1.2 seconds — creating the feeling that the images are settling into place rather than popping in. This is more cinematic than a hard fade.
+
+### Subtle Scroll Parallax on Images (desktop only)
+
+On desktop (`lg:` and up), each image receives a very gentle vertical parallax on scroll — not aggressive, just enough to create depth:
+
+```jsx
+const imgRef = useRef(null);
+const { scrollYProgress } = useScroll({
+  target: imgRef,
+  offset: ["start end", "end start"]
+});
+const imgY = useTransform(scrollYProgress, [0, 1], ["0%", "-8%"]);
+```
+
+Apply `imgY` to the `<motion.img>` as `style={{ y: imgY }}`. Only apply when `!isMobile && !prefersReducedMotion`. The `-8%` travel is subtle — the image shifts up slightly as the visitor scrolls past, creating a sense of dimensional depth.
+
+### `prefers-reduced-motion` Respect
+
+If `prefersReducedMotion` is true, skip all entrance animations (render at final state), disable parallax, and disable scale effects.
+
+```jsx
+const prefersReducedMotion = typeof window !== 'undefined' 
+  ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
+  : false;
+```
+
+---
+
+## Atmospheric & Visual Effects
+
+The atmospheric layers establish wine-dark mood throughout the fold without competing with the editorial content.
+
+### Atmospheric Layer Stack (absolute, pointer-events-none, z-0)
+
+**Layer A — Wine-red ambient bloom (top of section):**
+`absolute top-0 left-0 right-0 h-[400px]` with inline style `background: radial-gradient(ellipse at 50% 0%, rgba(166,44,33,0.07) 0%, transparent 70%)`
+A subtle wine-red bloom at the top, echoing the ambient warmth established in Fold 1.
+
+**Layer B — Clay warmth wash (mid-right):**
+`absolute top-1/3 right-0 w-[600px] h-[500px]` with inline style `background: radial-gradient(ellipse at 70% 50%, rgba(140,61,32,0.05) 0%, transparent 60%)`
+An oak-barrel reflection positioned off-center-right, creating asymmetric warmth that balances the editorial layout.
+
+**Layer C — Gold accent glow (behind master headline):**
+`absolute top-[15%] left-1/2 -translate-x-1/2 w-[500px] lg:w-[700px] h-[300px] lg:h-[400px] pointer-events-none` with inline style `background: radial-gradient(ellipse at center, rgba(191,140,96,0.05) 0%, transparent 65%)`
+Faint warmth behind the master headline — subliminal illumination, never visible as a shape.
+
+### Grain Texture
+
+Procedural SVG noise, consistent with Fold 1:
+
+```jsx
+<svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.03] mix-blend-overlay" xmlns="http://www.w3.org/2000/svg">
+  <filter id="manifestoGrain">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#manifestoGrain)"/>
+</svg>
+```
+
+### Image Treatment (CRITICAL)
+
+Each of the three editorial images must receive heavy treatment to remain wine-dark and on-brand:
+
+**Image wrapper structure:**
+```jsx
+<figure className="relative overflow-hidden aspect-[4/5] lg:aspect-[3/4] bg-[#2A1416]">
+  <motion.img
+    src={IMAGE_URL}
+    alt="..."
+    className="absolute inset-0 w-full h-full object-cover brightness-[0.5] lg:brightness-[0.55]"
+    loading="lazy"
+    style={{ y: imgY }}  // desktop parallax only
+  />
+  {/* Tint overlay — keeps images firmly in wine territory */}
+  <div 
+    className="absolute inset-0 pointer-events-none mix-blend-multiply" 
+    style={{ background: 'linear-gradient(135deg, rgba(26,15,16,0.4) 0%, rgba(140,61,32,0.25) 100%)' }}
+  />
+  {/* Bottom gradient — ensures visual separation from ambient background */}
+  <div 
+    className="absolute inset-x-0 bottom-0 h-1/3 pointer-events-none" 
+    style={{ background: 'linear-gradient(to top, rgba(26,15,16,0.5) 0%, transparent 100%)' }}
+  />
+  {/* Thin border to define the frame */}
+  <div className="absolute inset-0 ring-1 ring-inset ring-[#BF8C60]/8 pointer-events-none" />
+</figure>
+```
+
+**Image brightness:** `brightness-[0.5]` on mobile, `brightness-[0.55]` on desktop. Images should feel integrated into the wine-dark atmosphere, never bright or stock-photo-like.
+
+**Tint overlay:** The diagonal gradient `rgba(26,15,16,0.4) → rgba(140,61,32,0.25)` with `mix-blend-multiply` pushes the images firmly into wine territory, preventing any color drift toward green or generic dark.
+
+**Aspect ratio:** `aspect-[4/5]` on mobile (portrait editorial feel), `aspect-[3/4]` on desktop (slightly wider, fits the editorial grid).
+
+**Thin border:** `ring-1 ring-inset ring-[#BF8C60]/8` — a barely-visible gold hairline around each image frame, adding editorial polish.
+
+### Image Source Configuration
+
+Declare at the top of the component:
+
+```jsx
+// ============================================
+// IMAGE PLACEHOLDERS — Replace with real brand photography
+// ============================================
+const MANIFESTO_IMAGES = {
+  // Declaration I — Origem (vineyard/terroir)
+  origem: {
+    desktop: "https://images.unsplash.com/photo-1528825871115-3581a5387919?w=1200&auto=format&fit=crop&q=80",
+    mobile: "https://images.unsplash.com/photo-1528825871115-3581a5387919?w=700&auto=format&fit=crop&q=80",
+    alt: "Vinhedo na Serra Gaúcha ao amanhecer"
+  },
+  // Declaration II — Exclusividade (wine bottles in cellar)
+  exclusividade: {
+    desktop: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1200&auto=format&fit=crop&q=80",
+    mobile: "https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=700&auto=format&fit=crop&q=80",
+    alt: "Garrafas de vinho em adega de pedra"
+  },
+  // Declaration III — Personalização (label/bottle closeup)
+  personalizacao: {
+    desktop: "https://images.unsplash.com/photo-1569919659476-f0852f6834b7?w=1200&auto=format&fit=crop&q=80",
+    mobile: "https://images.unsplash.com/photo-1569919659476-f0852f6834b7?w=700&auto=format&fit=crop&q=80",
+    alt: "Close em garrafa de vinho com rótulo premium"
+  }
+};
+```
+
+**Alternatives** (include as commented-out swaps for user to try):
+```
+// Vineyard options:
+// https://images.unsplash.com/photo-1580867019403-52b6d1b9b8e1?w=1200&auto=format&fit=crop&q=80
+// https://images.unsplash.com/photo-1568213816046-0a1c5a57baff?w=1200&auto=format&fit=crop&q=80
+// 
+// Cellar/bottles options:
+// https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1200&auto=format&fit=crop&q=80
+// https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?w=1200&auto=format&fit=crop&q=80
+//
+// Label/closeup options:
+// https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=1200&auto=format&fit=crop&q=80
+// https://images.unsplash.com/photo-1547595628-c61a29f496f0?w=1200&auto=format&fit=crop&q=80
+```
+
+**Responsive delivery** via srcSet:
+```jsx
+<img
+  src={MANIFESTO_IMAGES.origem.mobile}
+  srcSet={`${MANIFESTO_IMAGES.origem.mobile} 700w, ${MANIFESTO_IMAGES.origem.desktop} 1200w`}
+  sizes="(max-width: 1024px) 100vw, 50vw"
+  alt={MANIFESTO_IMAGES.origem.alt}
+  ...
+/>
+```
+
+---
+
+## Micro-interactions
+
+This fold is primarily for reading, not interacting — but the few interactive touches should feel precious.
+
+### Image Hover (desktop only)
+
+Very subtle — the image should feel like it's breathing, not animating aggressively:
+
+- `hover:brightness-[0.65]` — the tiniest brightness lift (from 0.55 baseline)
+- `transition-all duration-1000 ease-out` — slow, luxurious
+- The inner `<motion.img>` can also scale subtly: `group-hover:scale-[1.02]` within a `group` parent figure
+- No shadow changes, no sudden color shifts — this is editorial restraint, not product-card interaction
+
+### Text Selection Styling
+
+Add a custom selection style that matches the wine-dark palette (this detail elevates the whole fold):
+
+```css
+::selection {
+  background-color: rgba(191, 140, 96, 0.25);
+  color: #D9BBA9;
+}
+```
+
+Include this inside the `<style>` block at the top of the component. When a visitor highlights manifesto text to copy or share, the selection color is on-brand gold instead of the default browser blue.
+
+### Numbered Marker Hover (desktop)
+
+The roman numerals (I, II, III, IV) become slightly brighter on hover of their containing article:
+- Default: `text-[#BF8C60]/60`
+- On `group-hover` (article parent): `group-hover:text-[#BF8C60]/90`
+- `transition-colors duration-700`
+
+---
+
+## Responsive Behavior
+
+### Mobile (default — 375px baseline, PRIMARY design target)
+
+- Section padding: `py-20 px-6`
+- All content in single column vertical flow
+- "— MANIFESTO —" label: `text-[10px]`, `tracking-[0.35em]`
+- Master headline: `text-3xl`, `leading-[1.08]`, `max-w-[22ch]`
+- Intro prose: `text-sm`, `max-w-full`, `px-2`
+- Declaration images: `aspect-[4/5]`, `w-full`, `rounded-sm` (subtle, editorial)
+- Declaration text blocks: below image, `mt-6`
+- Roman numerals: `text-4xl` (scaled down from desktop)
+- Declaration titles: `text-2xl`, `leading-tight`
+- Declaration bodies: `text-sm`, `leading-relaxed`
+- Metadata lines: `text-[10px]`
+- Vertical spacing between declarations: `mt-16`
+- Closing declaration (IV): `text-3xl`, `leading-[1.12]`
+- Signature: `text-lg`
+- No parallax on images (opacity-only entrance)
+- Image brightness: `brightness-[0.5]`
+- Entrance animations: opacity-only fades (remove y-translations)
+
+### Tablet (`md:` — 768px)
+
+- Section padding: `md:py-28`
+- Master headline: `md:text-5xl`
+- Intro prose: `md:text-base`
+- Declarations still stack vertically (single column) but with wider max-widths
+- Declaration images: `md:aspect-[3/4]`
+- Declaration titles: `md:text-3xl`
+- Closing declaration: `md:text-5xl`
+
+### Desktop (`lg:` — 1024px)
+
+- Section padding: `lg:py-40`
+- Root container: `lg:px-12`
+- Master headline: `lg:text-6xl`
+- Intro prose: `lg:text-lg`
+- **Declarations switch to asymmetric 12-column grid** with alternating image/text sides
+- Image aspect: `lg:aspect-[3/4]`
+- Declaration titles: `lg:text-4xl`
+- Declaration bodies: `lg:text-base`, `max-w-md`
+- Roman numerals: `lg:text-7xl`
+- Vertical spacing between declarations: `lg:mt-40`
+- Image parallax enabled (subtle, `-8%` travel)
+- Image brightness: `lg:brightness-[0.55]`
+- Closing declaration: `lg:text-6xl`, `max-w-4xl`
+
+### Large Desktop (`xl:` — 1280px+)
+
+- Master headline: `xl:text-7xl`
+- Content max-width: `max-w-7xl`
+- Images load `w=1200` variant
+
+---
+
+## Quality Checklist
+
+Verify before marking complete:
+
+**Visual & Brand:**
+- [ ] Primary canvas is `#1A0F10` (wine-black), NOT `#012626` (green-black)
+- [ ] Overall impression is wine-dark editorial — never reads as green
+- [ ] Visual weight distribution respects Master percentages
+- [ ] Gold and beige appear ONLY as text, italic emphasis, thin hairlines — never large surfaces
+- [ ] No generic gradients — all use brand hex values with specific opacity stops
+- [ ] No emoji anywhere
+- [ ] No Lucide icons used (fold is intentionally icon-free for editorial tone)
+- [ ] All three editorial images are heavily treated (`brightness-[0.5-0.55]` + multiply tint overlay)
+- [ ] Images feel integrated into wine-dark atmosphere, never stock-photo-like
+- [ ] Every image has thin gold ring border (`ring-[#BF8C60]/8`)
+
+**Editorial Layout:**
+- [ ] "— MANIFESTO —" label is present and centered at the top
+- [ ] Master headline contains italic gold "herança"
+- [ ] Four declarations each have a roman numeral (I, II, III, IV)
+- [ ] Declarations I, II, III have images in alternating layout (asymmetric grid on desktop)
+- [ ] Declaration IV has NO image — it's a full-width italic centered closing statement
+- [ ] Closing declaration contains italic gold "marcas"
+- [ ] Signature "— Adega Própria" is present in Fraunces italic gold
+- [ ] Short decorative gold hairline present after intro prose
+- [ ] Top and bottom gradient hairlines mark fold seams
+- [ ] Metadata lines present beneath each declaration body (coordinates/specs/services)
+
+**Atmospheric Glow Opacity (Master 0.04-0.10 ceiling):**
+- [ ] Wine-red ambient bloom: 0.07 ✓
+- [ ] Clay warmth wash: 0.05 ✓
+- [ ] Gold accent glow: 0.05 ✓
+- [ ] No ambient glow exceeds 0.10
+
+**Typography:**
+- [ ] Fraunces loaded and rendering on all serif headlines/prose
+- [ ] Master headline uses weight 400 (not 700 — this is manifesto prose)
+- [ ] "herança" in Fraunces italic + gold
+- [ ] "marcas" in closing declaration in italic + gold
+- [ ] Closing declaration is Fraunces italic (whole thing, not just emphasis word)
+- [ ] Signature line is Fraunces italic gold
+- [ ] DM Sans loaded for body, metadata, label
+- [ ] Custom `::selection` style matches wine-dark palette
+
+**Motion:**
+- [ ] Scroll-triggered entrances via `useInView`
+- [ ] Signature easing `[0.22, 1, 0.36, 1]` used throughout
+- [ ] Images scale from 1.05 → 1.0 on entrance
+- [ ] Desktop images have subtle -8% parallax on scroll
+- [ ] Entrance stagger: label → headline → prose → hairline, then per-declaration stagger
+- [ ] `prefers-reduced-motion` fully respected
+- [ ] Mobile entrances are opacity-only (no y-translations)
+
+**Technical:**
+- [ ] No CTA in this fold (correct per Master Briefing — conversion lives elsewhere)
+- [ ] Single `.jsx` file with `export default`
+- [ ] No `localStorage` or `sessionStorage`
+- [ ] Inline styles only for complex radial gradients and multi-stop linear gradients
+- [ ] All visible text in Brazilian Portuguese
+- [ ] No horizontal overflow at 375px
+- [ ] Images lazy-loaded (`loading="lazy"` — NOT eager, since this fold is below the hero)
+- [ ] Component fully self-contained
+- [ ] Section has `id="fold-3"` for potential smooth-scroll anchoring
+
+**The Editorial Test:**
+- [ ] Would this spread look at home in a luxury wine magazine?
+- [ ] Does it feel like a declaration/manifesto, or a feature list in disguise?
+- [ ] Is the pace slow and deliberate, encouraging the visitor to read rather than scroll?
+- [ ] Does the asymmetric grid feel intentional and editorial, not random?
+- [ ] Would you be proud to screenshot this at 375px and post on Dribbble?
+- [ ] Would you be proud to screenshot this at 1440px and post on Dribbble?
+- [ ] Reads as WINE-DARK, not green-dark?
