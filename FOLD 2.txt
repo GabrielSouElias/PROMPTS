@@ -1,0 +1,668 @@
+# FOLD 2 — VIDEO DE VENDAS | Adega Própria Landing Page
+
+---
+
+## Role & Design Philosophy
+
+You are a senior UI designer and frontend developer building the **sales video fold** of the Adega Própria landing page. This fold has one job: **present a video in a way that feels cinematic, intentional, and premium — then get out of the way and let the video sell.**
+
+This is NOT a generic YouTube embed dropped into a section. This is NOT a modal launcher. This is a **private screening room experience** — the visitor should feel like they've been invited to watch something rare. The video frame itself is a design object: a wine-dark vessel that contains the persuasion.
+
+There is no CTA in this fold. The video itself IS the conversion mechanism. CTAs live in Folds 1, 4, 6, 8, and 9. The job of Fold 2 is to present the video with enough premium framing that the visitor chooses to press play — and once they press play, the design disappears and the message takes over.
+
+**The darkness is wine-red, not green.** Canvas is `#1A0F10`. The video frame sits within this darkness like a lit painting in a gallery. Gold appears only in the subtle ring around the frame, the small play button, and restrained text accents. Never green. Never bright. Never loud.
+
+**Reference energy for this specific fold:**
+- **Pasqua** — the cinematic "enter the experience" framing, the sense that pressing play is entering a film
+- **Kettmeir** — editorial restraint, generous whitespace around key content moments
+- **Tenuta Luce** — refined frames with gold hairline details
+
+**Design mandates (non-negotiable):**
+- No emoji icons. No generic gradients. No inline styles (except for complex radial gradients Tailwind cannot express).
+- No bright play button. No oversized UI. The frame is the hero; the play button is a refined invitation.
+- Typography must be intentional — continue the Fraunces + DM Sans pairing established in Folds 1 and 3.
+- The video poster image must be dark, moody, and on-brand — treated heavily to match the wine-dark atmosphere.
+- Mobile-first: design for 375px, then enhance for desktop.
+- The fold must pass the "screenshot test" — even paused (poster state), it should look like a portfolio piece.
+
+---
+
+## Tech Stack (imports for this fold)
+
+```jsx
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView, AnimatePresence } from "framer-motion";
+import { Play } from "lucide-react";
+```
+
+The `Play` icon from Lucide is the ONE icon used in this fold — centered on the poster frame, refined and understated. No other icons.
+
+**Google Fonts import** (place at the top of the file, inside a `<style>` block rendered by the component):
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap');
+```
+
+---
+
+## Design Tokens (Master Briefing — Wine-Red Dark Palette)
+
+Continuing the established design system from Folds 1 and 3. **Primary canvas is wine-black, never green.**
+
+```
+DARK DOMINANT TONES (85%+ of visual space):
+  Canvas (primary):    bg-[#1A0F10]       ← deep wine-black base
+  Shadow layer:        bg-[#2A1416]       ← dark red-black, video frame surround
+  Warm depth:          bg-[#8C3D20]       ← reddish brown, poster tint overlays
+  Emotional depth:     bg-[#A62C21]       ← deep wine red, atmospheric glow accents
+
+ACCENT TONES (sparse):
+  Gold:                text-[#BF8C60] / border-[#BF8C60]
+  Warm beige:          text-[#D9BBA9]
+
+TEXT HIERARCHY:
+  Lead-in headline:    text-[#D9BBA9]     ← full opacity
+  Italic emphasis:     text-[#BF8C60]     ← gold, one word
+  Supporting prose:    text-[#D9BBA9]/65
+  Micro labels:        text-[#BF8C60]/75
+  Whisper metadata:    text-[#D9BBA9]/40
+
+BORDERS (felt more than seen):
+  Frame ring (outer):    ring-[#BF8C60]/15
+  Frame ring (inner):    ring-[#BF8C60]/8
+  Play button ring:      border-[#BF8C60]/30
+
+ATMOSPHERIC GLOW OPACITY (Master rule: 0.04 – 0.10 MAX):
+  Wine-red ambient (behind frame):  rgba(166,44,33,0.08)
+  Clay warmth (side wash):          rgba(140,61,32,0.05)
+  Gold projector glow (top edge):   rgba(191,140,96,0.06)
+
+INTERACTION GLOWS (exceed ambient ceiling — interaction-bound):
+  Play button hover glow:           rgba(191,140,96,0.28)
+  Frame hover accent:               rgba(191,140,96,0.18)
+```
+
+**Visual Weight Distribution — MANDATORY (from Master):**
+- `#1A0F10` → **45–55%** of visual space
+- `#2A1416` → **20–25%**
+- `#8C3D20` → **12–18%**
+- `#A62C21` → **8–12%**
+- `#BF8C60` → **5–8% maximum**
+- `#D9BBA9` → **text and subtle detail only**
+
+---
+
+## Layout Architecture
+
+The fold is a **content-sized section with generous breathing room**. Section padding: `py-20 md:py-28 lg:py-36`. NOT full-viewport — this fold is contained, focused, reverent. The video is the center of gravity.
+
+Root: `<section id="fold-2" className="relative w-full overflow-hidden bg-[#1A0F10] py-20 md:py-28 lg:py-36">`
+
+### Vertical Structure (top → bottom):
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│                                                                   │
+│              [EYEBROW LABEL]  "— ASSISTA —"                       │
+│                                                                   │
+│         [LEAD-IN HEADLINE]  Short Fraunces italic line          │
+│                                                                   │
+│   ┌──────────────────────────────────────────────────────┐      │
+│   │                                                        │      │
+│   │         [VIDEO FRAME — 16:9 ASPECT]                   │      │
+│   │                                                        │      │
+│   │          ╭─────────────────╮                          │      │
+│   │          │   [PLAY BUTTON]  │  ← centered overlay     │      │
+│   │          ╰─────────────────╯                          │      │
+│   │                                                        │      │
+│   │         [FRAME CHROME]  thin gold rings                │      │
+│   │                                                        │      │
+│   └──────────────────────────────────────────────────────┘      │
+│                                                                   │
+│           [WHISPER METADATA]  "2 min · Português"                │
+│                                                                   │
+└────────────────────────────────────────────────────────────────┘
+```
+
+### Grid System
+
+**All breakpoints:**
+- Root container: `max-w-6xl mx-auto px-6 lg:px-12` — slightly narrower than Fold 3's `max-w-7xl`, concentrating attention
+- All content vertically stacked and center-aligned
+- Video frame: centered with generous side padding on desktop
+
+**Key dimensions:**
+- Video frame max-width: `max-w-4xl mx-auto` on desktop — intentionally not edge-to-edge, there must be generous darkness around the frame
+- Video aspect: `aspect-video` (16:9, standard)
+- On very wide screens (`xl:`), the frame stays at `max-w-5xl` — still restrained
+
+---
+
+## Content Map (all text in Brazilian Portuguese)
+
+### 1. Eyebrow Label
+
+```
+— ASSISTA —
+```
+
+- Font: DM Sans, weight 500
+- Size: `text-[10px] sm:text-xs`
+- Tracking: `tracking-[0.4em]`
+- Transform: `uppercase`
+- Color: `text-[#BF8C60]/75`
+- Alignment: `text-center`
+- The em-dashes are literal characters flanking the word
+- Margin: `mb-6 lg:mb-10`
+
+### 2. Lead-in Headline (short, declarative)
+
+```
+Em dois minutos, você compreende o que torna a Adega Própria única.
+```
+
+- Font: Fraunces, weight 400
+- Size: `text-2xl sm:text-3xl md:text-4xl lg:text-5xl`
+- Color: `text-[#D9BBA9]`
+- Line height: `leading-[1.15]`
+- Letter spacing: `tracking-[-0.015em]`
+- Alignment: `text-center`
+- Max width: `max-w-[24ch] sm:max-w-[30ch] lg:max-w-3xl mx-auto`
+
+**Critical typographic detail — GOLD ITALIC WORD:** The word **"única"** must be rendered in:
+- Fraunces *italic*
+- Color: `text-[#BF8C60]` (gold)
+- Wrap in `<span className="italic text-[#BF8C60]">única</span>`
+- This continues the Tenuta Luce technique — visual consistency across all folds
+
+### 3. Video Frame (the star of the fold)
+
+See the detailed specification below in "Video Player Specification."
+
+### 4. Whisper Metadata (beneath video frame)
+
+```
+2 MIN · PORTUGUÊS · APRESENTADO POR ADEGA PRÓPRIA
+```
+
+- Font: DM Sans, weight 500
+- Size: `text-[10px] lg:text-xs`
+- Tracking: `tracking-[0.25em]`
+- Transform: `uppercase`
+- Color: `text-[#D9BBA9]/40`
+- Alignment: `text-center`
+- Margin: `mt-8 lg:mt-12`
+- The middle dots (`·`) are literal interpuncts
+
+---
+
+## Video Player Specification
+
+This is the heart of the fold. Build a **click-to-play YouTube poster experience** that feels premium and intentional.
+
+### Configuration (top of component file)
+
+```jsx
+// ============================================
+// VIDEO CONFIGURATION
+// ============================================
+// Replace VIDEO_ID with your real YouTube video ID once available
+const YOUTUBE_VIDEO_ID = "dQw4w9WgXcQ"; // placeholder — replace with real ID
+const VIDEO_START_SECONDS = 0;
+
+// Custom poster image — replace with branded poster when available
+const VIDEO_POSTER = {
+  desktop: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1600&auto=format&fit=crop&q=80",
+  mobile: "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=900&auto=format&fit=crop&q=80",
+  alt: "Apresentação Adega Própria"
+};
+// Alternatives for poster:
+// https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?w=1600&auto=format&fit=crop&q=80
+// https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=1600&auto=format&fit=crop&q=80
+// https://images.unsplash.com/photo-1560493676-04071c5f467b?w=1600&auto=format&fit=crop&q=80
+```
+
+### State Management
+
+```jsx
+const [isPlaying, setIsPlaying] = useState(false);
+
+const handlePlay = () => {
+  setIsPlaying(true);
+};
+```
+
+Once `isPlaying` becomes `true`, the poster is replaced with the actual YouTube iframe. The iframe should autoplay (since the user actively clicked to play, autoplay is user-initiated and browsers allow it).
+
+### DOM Structure
+
+```jsx
+<div className="relative w-full max-w-4xl mx-auto">
+  {/* Outer frame chrome — the "projector cabinet" */}
+  <div className="relative rounded-sm overflow-hidden ring-1 ring-[#BF8C60]/15 bg-[#2A1416] shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]">
+    {/* Inner frame — tighter gold ring */}
+    <div className="relative ring-1 ring-inset ring-[#BF8C60]/8 aspect-video">
+      
+      {!isPlaying ? (
+        <>
+          {/* POSTER STATE */}
+          <img
+            src={VIDEO_POSTER.mobile}
+            srcSet={`${VIDEO_POSTER.mobile} 900w, ${VIDEO_POSTER.desktop} 1600w`}
+            sizes="(max-width: 1024px) 100vw, 1024px"
+            alt={VIDEO_POSTER.alt}
+            className="absolute inset-0 w-full h-full object-cover brightness-[0.45]"
+            loading="lazy"
+          />
+          
+          {/* Poster tint overlay — locks into wine territory */}
+          <div 
+            className="absolute inset-0 pointer-events-none mix-blend-multiply" 
+            style={{ background: 'linear-gradient(135deg, rgba(26,15,16,0.45) 0%, rgba(140,61,32,0.3) 100%)' }}
+          />
+          
+          {/* Bottom gradient for depth */}
+          <div 
+            className="absolute inset-x-0 bottom-0 h-1/2 pointer-events-none" 
+            style={{ background: 'linear-gradient(to top, rgba(26,15,16,0.7) 0%, transparent 100%)' }}
+          />
+          
+          {/* Play button — centered, refined */}
+          <button
+            onClick={handlePlay}
+            className="group absolute inset-0 w-full h-full flex items-center justify-center cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-[#BF8C60] focus-visible:ring-offset-4 focus-visible:ring-offset-[#2A1416]"
+            aria-label="Reproduzir vídeo de apresentação"
+          >
+            {/* Play button visual */}
+            <div className="relative">
+              {/* Outer pulse ring (subtle, infinite) */}
+              <div className="absolute inset-0 rounded-full border border-[#BF8C60]/20 animate-[pulse_3s_ease-in-out_infinite] scale-125" />
+              
+              {/* Main button */}
+              <div className="relative w-16 h-16 lg:w-20 lg:h-20 rounded-full border border-[#BF8C60]/30 bg-[#1A0F10]/60 backdrop-blur-sm flex items-center justify-center transition-all duration-500 group-hover:bg-[#1A0F10]/80 group-hover:border-[#BF8C60]/60 group-hover:scale-110 group-hover:shadow-[0_0_40px_rgba(191,140,96,0.28)]">
+                <Play 
+                  className="w-6 h-6 lg:w-7 lg:h-7 text-[#BF8C60] translate-x-0.5 transition-transform duration-500 group-hover:translate-x-1" 
+                  strokeWidth={1.5} 
+                  fill="currentColor"
+                />
+              </div>
+            </div>
+          </button>
+          
+          {/* Optional caption on poster (bottom-left) */}
+          <div className="absolute bottom-4 left-4 lg:bottom-6 lg:left-6 pointer-events-none">
+            <p className="text-[#D9BBA9]/60 text-[10px] lg:text-xs tracking-[0.25em] uppercase font-medium" style={{ fontFamily: 'DM Sans, sans-serif' }}>
+              ADEGA PRÓPRIA · APRESENTAÇÃO
+            </p>
+          </div>
+        </>
+      ) : (
+        <>
+          {/* ACTIVE PLAYBACK STATE — YouTube iframe */}
+          <iframe
+            className="absolute inset-0 w-full h-full"
+            src={`https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&rel=0&modestbranding=1&start=${VIDEO_START_SECONDS}`}
+            title="Adega Própria - Apresentação"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        </>
+      )}
+    </div>
+  </div>
+  
+  {/* Decorative corner accents (desktop only, subtle) */}
+  <div className="hidden lg:block absolute -top-px -left-px w-8 h-px bg-[#BF8C60]/30" />
+  <div className="hidden lg:block absolute -top-px -left-px w-px h-8 bg-[#BF8C60]/30" />
+  <div className="hidden lg:block absolute -top-px -right-px w-8 h-px bg-[#BF8C60]/30" />
+  <div className="hidden lg:block absolute -top-px -right-px w-px h-8 bg-[#BF8C60]/30" />
+  <div className="hidden lg:block absolute -bottom-px -left-px w-8 h-px bg-[#BF8C60]/30" />
+  <div className="hidden lg:block absolute -bottom-px -left-px w-px h-8 bg-[#BF8C60]/30" />
+  <div className="hidden lg:block absolute -bottom-px -right-px w-8 h-px bg-[#BF8C60]/30" />
+  <div className="hidden lg:block absolute -bottom-px -right-px w-px h-8 bg-[#BF8C60]/30" />
+</div>
+```
+
+### The Decorative Corner Accents
+
+The four corners of the frame get tiny gold "L-shaped" marks — 8px horizontal + 8px vertical lines at each corner. This is a cinematic detail borrowed from film projection and photographic contact sheets. It appears only on desktop (`hidden lg:block`) where the frame is large enough to showcase the detail. On mobile, the clean rounded frame is sufficient.
+
+### The Animated Pulse Ring
+
+Around the play button, a subtle outer ring with `animate-[pulse_3s_ease-in-out_infinite] scale-125` creates a breathing effect — as if the button is quietly inviting. The animation is slow (3s) and restrained. Not a bouncing call-for-attention — a gentle pulse of presence.
+
+Add this to the component's `<style>` block if needed:
+```css
+@keyframes pulse {
+  0%, 100% { opacity: 0.3; transform: scale(1.25); }
+  50% { opacity: 0.6; transform: scale(1.35); }
+}
+```
+
+### Video Hover State (desktop only)
+
+When the user hovers over the entire frame (before clicking play):
+- The play button scales up: `group-hover:scale-110`
+- The play button background intensifies: `group-hover:bg-[#1A0F10]/80`
+- The play button border brightens: `group-hover:border-[#BF8C60]/60`
+- A gold glow emanates: `group-hover:shadow-[0_0_40px_rgba(191,140,96,0.28)]`
+- The Play icon shifts right by 4px: `group-hover:translate-x-1` — a micro-gesture suggesting forward motion
+- All transitions: `duration-500`
+
+### Mobile Tap State
+
+- `active:scale-[0.97]` on the button
+- Quick transition: `duration-150`
+- The poster touch target is the entire frame (the `<button>` fills `inset-0`)
+
+---
+
+## Component Breakdown (DOM hierarchy)
+
+```
+<section id="fold-2">  ← Root: relative, w-full, overflow-hidden, bg-[#1A0F10], py-20 md:py-28 lg:py-36
+  │
+  ├── <div>  ← Atmospheric layer: absolute inset-0, pointer-events-none
+  │   ├── <div>  ← Wine-red ambient (behind frame position)
+  │   ├── <div>  ← Clay warmth (side wash, right)
+  │   └── <div>  ← Gold projector glow (top edge, wide and thin)
+  │
+  ├── <svg>  ← Grain texture overlay (feTurbulence, opacity 0.03, mix-blend-overlay)
+  │
+  ├── <div>  ← Main content: relative z-10, max-w-6xl mx-auto px-6 lg:px-12
+  │   │
+  │   ├── <motion.p>    ← "— ASSISTA —" eyebrow label
+  │   │
+  │   ├── <motion.h2>   ← Lead-in headline with italic gold "única"
+  │   │
+  │   ├── <motion.div>  ← Video frame wrapper (max-w-4xl mx-auto)
+  │   │   ├── <div>     ← Outer frame chrome (rounded, ring, shadow)
+  │   │   │   └── <div> ← Inner frame (aspect-video)
+  │   │   │       │
+  │   │   │       ├── POSTER STATE (when !isPlaying):
+  │   │   │       │   ├── <img>     ← Dark-treated poster image
+  │   │   │       │   ├── <div>     ← Diagonal wine tint overlay (multiply)
+  │   │   │       │   ├── <div>     ← Bottom depth gradient
+  │   │   │       │   ├── <button>  ← Click-to-play trigger
+  │   │   │       │   │   └── <div> ← Play button visual
+  │   │   │       │   │       ├── <div>  ← Pulse ring
+  │   │   │       │   │       └── <div> ← Main button
+  │   │   │       │   │           └── <Play /> ← Lucide icon
+  │   │   │       │   └── <div>     ← Poster caption (bottom-left)
+  │   │   │       │
+  │   │   │       └── ACTIVE STATE (when isPlaying):
+  │   │   │           └── <iframe>  ← YouTube embed with autoplay
+  │   │   │
+  │   │   └── 8× <div>  ← Decorative corner accents (desktop only)
+  │   │
+  │   └── <motion.p>    ← Whisper metadata beneath frame
+```
+
+---
+
+## Animation & Motion Specification
+
+This fold uses **scroll-triggered entrance animations**, consistent with Fold 3. Elements animate in as they enter the viewport.
+
+### Scroll-Triggered Pattern
+
+```jsx
+const sectionRef = useRef(null);
+const isInView = useInView(sectionRef, { once: true, amount: 0.2 });
+```
+
+Trigger at `amount: 0.2` (20% of section in view) — earlier than Fold 3 because the video frame is larger and we want the entrance to begin before the visitor fully scrolls into the fold.
+
+### Element-by-Element Animation
+
+| Element | Initial | Animate (on inView) | Duration | Delay | Easing |
+|---|---|---|---|---|---|
+| "— ASSISTA —" label | `opacity: 0, y: 15` | `opacity: 1, y: 0` | 700ms | 0ms | `[0.22, 1, 0.36, 1]` |
+| Lead-in headline | `opacity: 0, y: 30` | `opacity: 1, y: 0` | 900ms | 150ms | `[0.22, 1, 0.36, 1]` |
+| Video frame | `opacity: 0, y: 40, scale: 0.98` | `opacity: 1, y: 0, scale: 1` | 1100ms | 400ms | `[0.22, 1, 0.36, 1]` |
+| Corner accents (each) | `opacity: 0` | `opacity: 1` | 600ms | 1000ms | `easeOut` |
+| Whisper metadata | `opacity: 0, y: 15` | `opacity: 1, y: 0` | 700ms | 800ms | `[0.22, 1, 0.36, 1]` |
+
+The frame's entrance is the signature moment — `scale: 0.98 → 1.0` combined with `y: 40 → 0` creates the feeling of the frame "settling into place" like a photograph being hung on a wall.
+
+### Playback Transition
+
+When the user clicks to play, use `AnimatePresence` to transition from poster to iframe:
+
+```jsx
+<AnimatePresence mode="wait">
+  {!isPlaying ? (
+    <motion.div
+      key="poster"
+      exit={{ opacity: 0, scale: 1.02 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {/* poster content */}
+    </motion.div>
+  ) : (
+    <motion.div
+      key="player"
+      initial={{ opacity: 0, scale: 0.98 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {/* iframe */}
+    </motion.div>
+  )}
+</AnimatePresence>
+```
+
+The poster fades and scales up slightly on exit (suggesting it's "dissolving away"), while the iframe fades in with a subtle scale-up. Quick, cinematic, never jarring.
+
+### `prefers-reduced-motion` Respect
+
+If `prefersReducedMotion` is true:
+- Skip all entrance animations (render at final state)
+- Skip the pulse ring animation on the play button
+- Skip the corner accent delayed fade-in (show them immediately)
+- Keep click-to-play transition instant (no animation)
+
+```jsx
+const prefersReducedMotion = typeof window !== 'undefined' 
+  ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
+  : false;
+```
+
+---
+
+## Atmospheric & Visual Effects
+
+The atmosphere supports the video frame without competing with it.
+
+### Atmospheric Layer Stack (absolute, pointer-events-none, z-0)
+
+**Layer A — Wine-red ambient (behind video frame position):**
+`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] lg:w-[1000px] lg:h-[600px]` with inline style `background: radial-gradient(ellipse at center, rgba(166,44,33,0.08) 0%, transparent 65%)`
+A subtle wine-red glow positioned exactly where the video frame sits. When the frame is in view, the ambient color bleeds around it — suggesting the frame is emitting warmth. At 0.08 opacity, it's felt more than seen.
+
+**Layer B — Clay warmth side wash (right edge):**
+`absolute top-1/4 right-0 w-[400px] h-[400px]` with inline style `background: radial-gradient(ellipse at 80% 50%, rgba(140,61,32,0.05) 0%, transparent 60%)`
+An oak-barrel reflection on the right side, adding asymmetric warmth that prevents the fold from feeling too symmetrical or balanced.
+
+**Layer C — Gold projector glow (top edge, wide and thin):**
+`absolute top-0 left-0 right-0 h-[200px]` with inline style `background: radial-gradient(ellipse at 50% 0%, rgba(191,140,96,0.06) 0%, transparent 70%)`
+A wide, flat gold glow at the top of the section — evokes the light leaking from a film projector positioned behind the viewer. This is the fold's signature atmospheric touch: it subtly reinforces the "private screening room" metaphor.
+
+### Grain Texture
+
+Procedural SVG noise, consistent with Folds 1 and 3:
+
+```jsx
+<svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.03] mix-blend-overlay" xmlns="http://www.w3.org/2000/svg">
+  <filter id="videoGrain">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#videoGrain)"/>
+</svg>
+```
+
+### Video Frame Shadow
+
+The video frame itself casts a deep shadow that grounds it in the darkness:
+- `shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]`
+
+This is a long, soft, dark shadow (not a hard dropshadow). The `-20px` in the spread radius pulls the shadow inward, making it feel like the frame is floating slightly above the background — not pasted onto it.
+
+---
+
+## Micro-interactions
+
+### Text Selection Styling (consistent with Fold 3)
+
+```css
+::selection {
+  background-color: rgba(191, 140, 96, 0.25);
+  color: #D9BBA9;
+}
+```
+
+Include inside the `<style>` block. Wine-dark selection color across the entire component.
+
+### Focus-Visible Ring on Play Button
+
+When the button receives keyboard focus:
+- `focus-visible:ring-2 focus-visible:ring-[#BF8C60] focus-visible:ring-offset-4 focus-visible:ring-offset-[#2A1416]`
+
+The offset matches the inner frame color so the focus ring sits cleanly inside the frame chrome.
+
+### Play Button Keyboard Activation
+
+The play button is a semantic `<button>` — Enter and Space trigger `handlePlay()` natively. No custom keyboard handling needed.
+
+---
+
+## Responsive Behavior
+
+### Mobile (default — 375px baseline, PRIMARY design target)
+
+- Section padding: `py-20 px-6`
+- Root container: full-width with `px-6`
+- Eyebrow: `text-[10px]`, `tracking-[0.35em]`
+- Lead-in headline: `text-2xl`, `leading-[1.18]`, `max-w-[26ch]`
+- Video frame: `max-w-full` — fills available width (minus padding)
+- Video aspect: `aspect-video` (16:9)
+- Play button: `w-14 h-14` (56px — above 44px touch target minimum)
+- Play icon: `w-5 h-5`
+- Corner accents: HIDDEN on mobile (`hidden lg:block`)
+- Whisper metadata: `text-[10px]`, `tracking-[0.2em]`
+- Vertical gap between elements: `mb-6` / `mt-8`
+- Poster image brightness: `brightness-[0.45]`
+- Entrance animations: opacity-only fades (remove y-translations)
+
+### Tablet (`md:` — 768px)
+
+- Section padding: `md:py-28`
+- Lead-in headline: `md:text-4xl`
+- Video frame: `md:max-w-3xl mx-auto`
+- Play button: `md:w-16 md:h-16`
+- Play icon: `md:w-6 md:h-6`
+
+### Desktop (`lg:` — 1024px)
+
+- Section padding: `lg:py-36`
+- Root container: `lg:px-12`
+- Lead-in headline: `lg:text-5xl`
+- Video frame: `lg:max-w-4xl`
+- Play button: `lg:w-20 lg:h-20`
+- Play icon: `lg:w-7 lg:h-7`
+- Corner accents: VISIBLE (`lg:block`)
+- Poster image brightness: `lg:brightness-[0.5]`
+- Full entrance choreography with y-translations
+- Frame hover interactions fully enabled
+
+### Large Desktop (`xl:` — 1280px+)
+
+- Video frame: `xl:max-w-5xl`
+- Content max-width: `max-w-6xl`
+- Poster image loads `w=1600` variant via `srcSet`
+
+---
+
+## Quality Checklist
+
+Verify before marking complete:
+
+**Visual & Brand:**
+- [ ] Primary canvas is `#1A0F10` (wine-black), NOT `#012626` (green-black)
+- [ ] Overall impression is wine-dark cinematic — never reads as green
+- [ ] Visual weight distribution respects Master percentages
+- [ ] Gold and beige appear ONLY as text, frame rings, play button, small accents — never large surfaces
+- [ ] No generic gradients — all use brand hex values with specific opacity stops
+- [ ] No emoji anywhere
+- [ ] Only ONE icon used in the fold (Lucide `<Play />`)
+- [ ] Poster image is heavily treated (`brightness-[0.45-0.5]` + multiply wine tint overlay)
+- [ ] Poster feels integrated into wine-dark atmosphere, never stock-photo-like
+- [ ] Video frame has thin gold ring (`ring-[#BF8C60]/15`) and inner ring (`ring-[#BF8C60]/8`)
+- [ ] Long soft shadow beneath frame (`shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)]`)
+
+**Content & Layout:**
+- [ ] "— ASSISTA —" eyebrow label centered at top
+- [ ] Lead-in headline contains italic gold "única"
+- [ ] Video frame is centered and contained (not edge-to-edge)
+- [ ] Poster state shows dark image + refined play button + "ADEGA PRÓPRIA · APRESENTAÇÃO" caption
+- [ ] Play button has subtle pulse ring animation
+- [ ] Whisper metadata "2 MIN · PORTUGUÊS · APRESENTADO POR ADEGA PRÓPRIA" beneath frame
+- [ ] Decorative corner accents present on desktop only (8× tiny gold L-shapes)
+- [ ] No CTA in this fold (correct per Master — video does the persuasion)
+
+**Video Functionality:**
+- [ ] `YOUTUBE_VIDEO_ID` constant at top of file for easy replacement
+- [ ] Clicking play button/poster triggers `setIsPlaying(true)`
+- [ ] YouTube iframe uses `autoplay=1&rel=0&modestbranding=1` parameters
+- [ ] Iframe has proper `allow` attribute for autoplay, fullscreen, etc.
+- [ ] `allowFullScreen` set on iframe
+- [ ] Smooth `AnimatePresence` transition from poster to iframe
+- [ ] Button is semantic `<button>` element with `aria-label`
+- [ ] Keyboard accessible (Enter/Space activates)
+- [ ] Focus-visible ring present and on-brand
+
+**Atmospheric Glow Opacity (Master 0.04-0.10 ceiling for ambient):**
+- [ ] Wine-red ambient behind frame: 0.08 ✓
+- [ ] Clay warmth side wash: 0.05 ✓
+- [ ] Gold projector glow: 0.06 ✓
+- [ ] No ambient glow exceeds 0.10
+- [ ] Play button hover glow at 0.28 is interaction-bound (acceptable)
+
+**Typography:**
+- [ ] Fraunces loaded and rendering on lead-in headline
+- [ ] "única" in Fraunces italic + gold `#BF8C60`
+- [ ] DM Sans loaded for eyebrow, metadata, poster caption
+- [ ] Custom `::selection` style matches wine-dark palette
+
+**Motion:**
+- [ ] Scroll-triggered entrances via `useInView` at `amount: 0.2`
+- [ ] Signature easing `[0.22, 1, 0.36, 1]` used throughout
+- [ ] Video frame entrance: opacity + y + scale (settling effect)
+- [ ] Corner accents fade in after frame (staggered delay)
+- [ ] Pulse ring around play button animates infinitely (3s)
+- [ ] Play icon translates right 4px on hover (forward motion micro-gesture)
+- [ ] Play button scales up 10% on hover with gold glow
+- [ ] Poster-to-iframe transition smooth via AnimatePresence
+- [ ] `prefers-reduced-motion` fully respected
+- [ ] Mobile entrances are opacity-only
+
+**Technical:**
+- [ ] Single `.jsx` file with `export default`
+- [ ] No `localStorage` or `sessionStorage`
+- [ ] Inline styles only for complex gradients
+- [ ] All visible text in Brazilian Portuguese
+- [ ] No horizontal overflow at 375px
+- [ ] Poster image lazy-loaded (`loading="lazy"`)
+- [ ] Poster uses responsive `srcSet` for mobile/desktop variants
+- [ ] Component fully self-contained
+- [ ] Section has `id="fold-2"` for potential smooth-scroll anchoring
+- [ ] YouTube iframe loads ONLY after user clicks play (no unnecessary network requests)
+
+**The Cinematic Test:**
+- [ ] Does the paused (poster) state look intentional, like a movie poster, not a broken video?
+- [ ] Does pressing play feel like entering a film, not triggering a modal?
+- [ ] Would you be proud to screenshot the poster state at 375px and post on Dribbble?
+- [ ] Would you be proud to screenshot the poster state at 1440px and post on Dribbble?
+- [ ] Does the fold feel like a private screening room, not a generic video embed section?
+- [ ] Reads as WINE-DARK, not green-dark?
