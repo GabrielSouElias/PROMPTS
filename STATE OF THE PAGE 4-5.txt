@@ -1,0 +1,179 @@
+# STATE OF THE PAGE — Adega Própria (through Fold 4)
+
+Brief for the Builder. Read after the Master prompt, before the Fold 5 prompt. 
+This captures what the page looks and behaves like right now — the decisions 
+already locked in that every new fold must continue or deliberately evolve.
+
+## Status
+
+- **Fold 1 Hero** — built and shipped as `folds/Fold1Hero.jsx`
+- **Atmospheric Bridge** (between Folds 1 and 2) — prompt created, build pending
+- **Fold 2 Video de Vendas** — prompt created, build pending
+- **Fold 3 Manifesto** — prompt created, build pending
+- **Fold 4 CTA Interstitial** — prompt created, build pending
+- **Folds 5–9** — not yet specified
+
+## Global architecture (not per-fold)
+
+- **Navigation** is a global fixed overlay that lives above all folds — 
+  individual fold components do not render or account for it.
+- **Lenis** smooth scroll is installed at the page root. Every fold uses 
+  `useScroll` from Framer Motion normally; Lenis enhances transparently, 
+  no per-fold import needed.
+- **Sticky mobile WhatsApp bar** is owned by Fold 1 and persists across 
+  the entire page on mobile only (`lg:hidden`). Its visibility is driven 
+  by IntersectionObserver on the hero ref — the bar appears when less 
+  than 25% of the hero is in view, and disappears when the hero re-enters.
+- **Root wrapper** enforces `overflow-x: clip` and `max-w-[100vw]` to 
+  prevent mobile horizontal scroll — no fold may rely on its own section 
+  clipping alone.
+- **Image configuration convention**: each fold declares a top-level 
+  `const FOLD_IMAGES = { desktop, mobile, alt }` block for easy swap when 
+  real photography arrives.
+- **Placeholder WhatsApp URL**: 
+  `https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20criar%20minha%20pr%C3%B3pria%20marca%20de%20vinhos%20com%20a%20Adega%20Pr%C3%B3pria.`
+
+## CTA cadence across the page
+
+Conversion moments are rare and earned. The page must not offer the CTA 
+at every opportunity — that cheapens the transformation. Current rhythm:
+
+- **Fold 1 (Hero)**: primary CTA "Crie Sua Marca Agora" — the invitation
+- **Folds 2, 3**: NO CTA — emotional accumulation
+- **Fold 4 (Interstitial)**: primary CTA "Crie Sua Marca Agora" — the demand
+- **Fold 5**: NO CTA (likely) — emotional depth before proof
+- **Folds 6, 8, 9**: CTAs return at the end of each (process → proof → finale)
+
+When building Fold 5, resist the impulse to add a CTA. The pressure should 
+build through the end of Fold 5 and release in Fold 6.
+
+## Locked decisions per existing fold
+
+### Fold 1 — Hero
+- Full viewport (`min-h-[100dvh]`), six-layer atmospheric overlay stack
+- Content container: `max-w-5xl`
+- **Gold italic word**: "Finos"
+- Headline weight: Fraunces 700 (bold declarative)
+- **Eyebrow style**: interpuncts (`VINHOS FINOS · SERRA GAÚCHA · A PARTIR DE 60 GARRAFAS`)
+- Parallax: desktop only, 25% travel, disabled on mobile
+- Primary CTA: "Crie Sua Marca Agora" (gold pill, MessageCircle icon only)
+- Trust signal: "Atendimento personalizado via WhatsApp" (atmospheric)
+- Image brightness: 0.25 mobile, 0.3 desktop
+- Load-triggered entrance (hero is above fold)
+
+### Atmospheric Bridge
+- Borrows Motion Footer visual language (giant "Adega Própria" wordmark, 
+  aurora glow, grid background) — NO footer architecture
+- `min-h-[70vh] md:min-h-[80vh]`, top/bottom fade gradients
+- No CTA, no heading — purely atmospheric pause
+
+### Fold 2 — Video de Vendas
+- Contained `py-20 md:py-28 lg:py-36`, NOT full-viewport
+- Container: `max-w-6xl`, video frame `max-w-4xl`
+- **Gold italic word**: "única"
+- Headline weight: Fraunces 400 (softer, conversational)
+- **Eyebrow style**: em-dash flanks (`— ASSISTA —`)
+- NO CTA (video is the conversion)
+- Click-to-play YouTube poster + 8 decorative corner accents (desktop only)
+- Poster brightness: 0.45–0.5
+
+### Fold 3 — Manifesto
+- Editorial spread `py-24 md:py-32 lg:py-40`, content-sized
+- Container: `max-w-7xl`, 12-column asymmetric grid on desktop
+- **Gold italic words**: "herança" (master headline) + "marcas" (closing declaration IV)
+- Master headline weight: Fraunces 400 (prose tone); closing declaration 
+  rendered entirely italic
+- **Eyebrow style**: em-dash flanks (`— MANIFESTO —`)
+- Four declarations: I, II, III with images (alternating asymmetric), 
+  IV without image (centered italic closing statement)
+- NO CTA
+- Image aspects: `aspect-[4/5]` mobile, `aspect-[3/4]` desktop
+- Desktop parallax on images: –8% travel, subtle
+- Kettmeir technique: geographic coordinates in metadata
+
+### Fold 4 — CTA Interstitial
+- Commanding vertical presence `min-h-[85vh] lg:min-h-[90vh]`, 
+  `py-24 md:py-32 lg:py-40`
+- Container: `max-w-5xl` — intimate and focused
+- **Gold italic word**: "merece"
+- Headline weight: Fraunces 400 at `xl:text-[9rem]` — the LARGEST type 
+  on the landing page (scale does the declaring, weight stays refined)
+- **Eyebrow style**: vertical tick + label (`│ A DECISÃO`) — a third 
+  convention introduced for conversion-oriented folds
+- **Darkest fold on the page**: wine-red pushed to 0.09 opacity 
+  (Master ceiling), edge vignette at 0.6 toward pitch black, 
+  gold limited to 3–5% (below baseline) making its appearances precious
+- **Signature element**: vertical gold hairline axis (scaleY draw-down 
+  from top, 1.4s) with soft glow strip behind
+- CTA: "Crie Sua Marca Agora" (LARGER than Fold 1's — `px-10 py-5 
+  lg:px-12 lg:py-6`), MessageCircle + ArrowUpRight icons, hover shimmer 
+  animation on pill edge
+- Trust signal: "Resposta em até 2 horas · Segunda a Sábado" 
+  (contractual, not atmospheric — differentiated from Fold 1)
+- No image. No split layout. No secondary CTA.
+
+## System rhythm patterns (continuity signals)
+
+**Container width progression** — width carries pacing signal:
+- Hero (immersive): `max-w-5xl`
+- Video (focused contained): `max-w-6xl` with `max-w-4xl` frame
+- Manifesto (editorial expansive): `max-w-7xl`
+- Interstitial (intimate demand): `max-w-5xl`
+- Every new fold should choose its container width deliberately.
+
+**Eyebrow style — three conventions now established:**
+- **Interpuncts** (`WORD · WORD · WORD`) when stacking credibility signals — Fold 1
+- **Em-dash flanks** (`— WORD —`) for single-word editorial quiet — Folds 2, 3
+- **Vertical tick** (`│  WORD`) for conversion-oriented declarative — Fold 4
+- New folds may introduce a fourth convention ONLY if the tonal shift 
+  justifies it. Otherwise, pick one of the three.
+
+**Gold italic words already used** (avoid repeating):
+- "Finos" (Fold 1), "única" (Fold 2), "herança" + "marcas" (Fold 3), 
+  "merece" (Fold 4)
+- Every new headline needs its own distinct emphasis word — the emotional 
+  pivot of the sentence, never a filler adjective.
+
+**Headline weight logic:**
+- Fraunces **700** when declaring aspiration (Fold 1 Hero)
+- Fraunces **400** when the register is prose, meditation, or massive-scale 
+  declaration where the type size carries the weight (Folds 2, 3, 4)
+- Pick weight based on emotional register, not content importance.
+
+**Trust signal evolution:**
+- Fold 1: atmospheric reassurance ("Atendimento personalizado via WhatsApp")
+- Fold 4: contractual commitment ("Resposta em até 2 horas · Segunda a Sábado")
+- Future CTA folds should not copy Fold 4's exact phrasing — find their 
+  own angle (testimonial tone, volume signal, etc.).
+
+**CTA differentiation rule:**
+- Every CTA across the page drives to the same WhatsApp URL and may 
+  share the same text, BUT the pill's visual weight must escalate with 
+  page depth. Fold 1's CTA = invitation (smaller, MessageCircle only). 
+  Fold 4's CTA = demand (larger, MessageCircle + ArrowUpRight, hover 
+  shimmer). Folds 6, 8, 9 should continue this escalation — the final 
+  CTA in Fold 9 is the most visually weighted pill on the page.
+
+## Every new fold must honor
+
+- Canvas `#1A0F10` — wine-black, never `#012626`, never green-led
+- Weight distribution: `#1A0F10` 45–55%, `#2A1416` 20–25%, `#8C3D20` 12–18%, 
+  `#A62C21` 8–12%, `#BF8C60` 5–8% max, `#D9BBA9` text-only 
+  (Fold 4 pushes darker; other folds stay in baseline range)
+- Signature easing `[0.22, 1, 0.36, 1]` across every entrance
+- Grain: SVG `feTurbulence` noise at `opacity-[0.03]`, `mix-blend-overlay`, 
+  unique filter `id` per fold (`fold1Grain`, `fold2Grain`, `fold3Grain`, 
+  `fold4Grain`, next: `fold5Grain`)
+- Ambient glow opacity ceiling 0.04–0.10 (interaction states may exceed)
+- `::selection` styled gold: `rgba(191, 140, 96, 0.25)` / `#D9BBA9`
+- `prefers-reduced-motion` detection colocated in every component
+- Hairline seam between folds: `bg-gradient-to-r from-transparent via-[#BF8C60]/20 to-transparent`
+- Image treatment: `brightness-[0.45–0.55]` + diagonal wine tint 
+  (`mix-blend-multiply`) + bottom depth gradient + `ring-[#BF8C60]/8` inset
+- All visible copy in Brazilian Portuguese
+- Exactly one gold italic emphasis word per major headline (Fraunces italic, 
+  `text-[#BF8C60]`)
+- Fold root pattern: `<section id="fold-N" className="relative w-full overflow-hidden bg-[#1A0F10] ...">`
+- Atmospheric layers using arbitrary pixel widths (`w-[700px]`, etc.) 
+  must clamp on mobile — use pattern 
+  `w-[90vw] lg:w-[900px] max-w-full` to prevent horizontal overflow.
