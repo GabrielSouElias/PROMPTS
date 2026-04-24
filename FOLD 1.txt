@@ -1,0 +1,608 @@
+# FOLD 1 — HERO | Adega Própria Landing Page
+
+---
+
+## Role & Design Philosophy
+
+You are a senior UI designer and frontend developer building the **hero section** of a luxury wine brand landing page. This is the single most important fold — it sets the emotional tone for the entire page and must convert first-time visitors within seconds.
+
+Build a premium, **wine-dark** immersive hero that sells a **transformation**: the dream of owning your own premium wine brand with wines sourced directly from renowned Serra Gaúcha wineries. This is NOT a product page. This is an emotional entry point — the visitor should feel like they just pushed open the heavy wooden door of an exclusive wine cellar at night, and stepped into darkness lit only by candlelight and the amber glow of aged oak.
+
+**The darkness is the design — and the darkness is wine-red, not green.** The hero must be overwhelmingly dark. `#1A0F10` (deep wine-black) is the enveloping canvas. `#2A1416` is the shadow layer. `#8C3D20` and `#A62C21` are the warm undercurrents of depth. Gold (`#BF8C60`) and beige (`#D9BBA9`) appear only as rare, precious details — like candlelight reflected on the curve of a wine glass. If you sampled the hero's pixel colors into a histogram, 85%+ should be in the wine-dark range. The light exists to serve the darkness, not to compete with it.
+
+**Absolutely avoid any green-led interpretation.** The previous version of this design drifted toward green. This must NOT happen. The canvas is `#1A0F10` — wine-black, not green-black.
+
+**Design mandates (non-negotiable):**
+- No emoji icons. No inline styles (except for complex radial gradients Tailwind cannot express). No generic gradients.
+- No placeholder images except dark, moody Unsplash wine photography with heavy dark overlay treatments.
+- Typography must be intentional — use the established Fraunces + DM Sans pairing.
+- Every element must feel like it belongs in an Awwwards-winning portfolio.
+- Mobile-first: design for 375px, then enhance for desktop.
+- The hero must pass the "screenshot test" — if posted on Dribbble, it receives genuine engagement.
+
+---
+
+## Tech Stack (imports for this fold)
+
+```jsx
+import { useState, useEffect, useRef, useCallback } from "react";
+import { motion, useScroll, useTransform, useSpring, useInView, AnimatePresence } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { MessageCircle, ChevronDown } from "lucide-react";
+```
+
+**Google Fonts import** (place at the very top of the file, inside a `<style>` block rendered by the component):
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap');
+```
+
+---
+
+## Design Tokens (Master Briefing — Wine-Red Dark Palette)
+
+Use these tokens via Tailwind arbitrary values. **The primary canvas is wine-black, not green-black.**
+
+```
+DARK DOMINANT TONES (85%+ of visual space):
+  Canvas (primary):    bg-[#1A0F10]       ← deep wine-black base, the enveloping darkness
+  Shadow layer:        bg-[#2A1416]       ← dark red-black, elevated surfaces, nav scroll state
+  Warm depth:          bg-[#8C3D20]       ← reddish brown, gradient mid-tones, warmth washes
+  Emotional depth:     bg-[#A62C21]       ← deep wine red, atmospheric glows, dramatic washes
+
+ACCENT TONES (sparse — 10-15% of visual space, never large fills):
+  Gold:                text-[#BF8C60] / bg-[#BF8C60] / border-[#BF8C60]
+  Warm beige:          text-[#D9BBA9]
+
+TEXT HIERARCHY:
+  Display headlines:   text-[#D9BBA9]     ← full opacity, warm luminous
+  Italic emphasis:     text-[#BF8C60]     ← gold, one word per headline
+  Body:                text-[#D9BBA9]/75
+  Muted:               text-[#D9BBA9]/50
+  Micro/legal:         text-[#D9BBA9]/40
+  Gold labels:         text-[#BF8C60]/80  ← slightly held back for restraint
+
+BORDERS (felt more than seen):
+  Near-invisible gold: border-[#BF8C60]/10
+  Clay warmth border: border-[#8C3D20]/20
+  Soft beige:         border-[#D9BBA9]/5
+  Hover state:        hover:border-[#BF8C60]/30
+
+FOCUS RING:
+  focus-visible:ring-2 focus-visible:ring-[#BF8C60] focus-visible:ring-offset-2 focus-visible:ring-offset-[#1A0F10]
+
+ATMOSPHERIC GLOW OPACITY CEILING (Master rule: 0.04 – 0.10 MAX):
+  Gold glow (behind headline):      rgba(191,140,96,0.06)   ← barely perceived warmth
+  Wine-red atmospheric wash:        rgba(166,44,33,0.08)    ← subtle bloom
+  Clay warmth (off-center):         rgba(140,61,32,0.05)    ← oak-barrel undertone
+  CTA hover glow (interaction):     rgba(191,140,96,0.22)   ← exceeds ambient but is interaction-bound
+```
+
+**Visual Weight Distribution — MANDATORY (from Master):**
+- `#1A0F10` → **45–55%** of visual space
+- `#2A1416` → **20–25%**
+- `#8C3D20` → **12–18%**
+- `#A62C21` → **8–12%**
+- `#BF8C60` → **5–8% maximum**
+- `#D9BBA9` → **text and subtle detail only**
+
+If you sampled any region of the hero at any scroll position, the wine-dark tones must dominate. Gold and beige must never dominate large surfaces.
+
+---
+
+## Layout Architecture
+
+The hero is a **full-viewport immersive section** (`min-h-[100dvh]`). It is composed of **six visual layers** stacked via `position: relative` / `absolute`, creating a deep sense of dimensional wine-dark atmosphere:
+
+### Layer 1 — Parallax Background Image (deepest)
+
+A full-bleed background image (dark wine cellar / vineyard at night) that moves vertically on scroll via Framer Motion's `useScroll` + `useTransform`. The image is `position: fixed` (desktop) or `position: absolute` (mobile — disable parallax for performance). Wrapped in a `clipPath: polygon(0% 0, 100% 0%, 100% 100%, 0 100%)` container to prevent the fixed image from bleeding into adjacent folds.
+
+**Reference the Animation Background component in `/COMPONENTES/ANIMATION BACKGROUND/`.** Study the `demo.tsx` file — it demonstrates the exact `useScroll` + `useTransform` + `clipPath` + `fixed` positioning technique. Adapt it: replace the Next.js `<Image>` with a standard `<img>` tag + absolute positioning, and apply the brand's heavy dark overlay treatment on top.
+
+**CRITICAL IMAGE TREATMENT:** The background image must be dramatically darkened. It should be barely visible — a texture of shadows and shapes more than a photograph. The image provides depth and organic texture to the darkness, NOT visual content. Apply a CSS `brightness(0.3)` filter on the `<img>` itself (`brightness(0.25)` on mobile) PLUS the overlay stack below. The visitor should feel the image more than see it.
+
+### Layer 2 — Wine-Dark Overlay Stack (where the mood lives)
+
+Multiple overlapping gradient and color layers that transform the image into a branded wine-dark atmosphere. These are the most important elements in the entire hero — they create the wine cellar mood and enforce the wine-red (not green) identity:
+
+**2a. Primary anchor gradient (heaviest):**
+`absolute inset-0` with inline style `background: linear-gradient(to top, #1A0F10 0%, rgba(26,15,16,0.92) 40%, rgba(26,15,16,0.55) 70%, transparent 100%)`
+This grounds the bottom 60% of the hero in near-solid wine-black. All text at the bottom half has perfect readability.
+
+**2b. Top shadow layer (uses #2A1416 — the dark red-black):**
+`absolute top-0 left-0 right-0 h-[40vh]` with inline style `background: linear-gradient(to bottom, rgba(42,20,22,0.75) 0%, transparent 100%)`
+Darkens the top zone for navigation readability using the #2A1416 shadow layer, reinforcing the wine-dark identity.
+
+**2c. Radial cinematic vignette (pushes edges to wine-black):**
+`absolute inset-0` with inline style `background: radial-gradient(ellipse at center, transparent 30%, #1A0F10 85%)`
+A powerful radial vignette that pushes the edges into near-blackness, focusing the eye toward the center where the headline lives. The `30% → 85%` range is tighter than standard — this is cinematic, not photographic.
+
+**2d. Wine-red atmospheric wash (lower center):**
+`absolute inset-0` with inline style `background: radial-gradient(ellipse at 50% 70%, rgba(166,44,33,0.08) 0%, transparent 50%)`
+A barely-perceptible wash of deep wine red in the lower-center. Adds a warm, organic undertone like the ambient reflection of red wine in a dim room. At 0.08 opacity (Master's upper limit), it's felt more than seen.
+
+**2e. Clay warmth (mid-layer, off-center-left — the oak barrel reflection):**
+`absolute inset-0` with inline style `background: radial-gradient(ellipse at 30% 40%, rgba(140,61,32,0.05) 0%, transparent 40%)`
+An extremely subtle reddish-brown warmth positioned slightly off-center-left. This prevents the darkness from feeling cold or clinical — it adds the warmth of aged oak barrels and keeps the overall tone firmly in wine territory.
+
+**2f. Gold headline glow (the "candle" in the cellar):**
+`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[350px] lg:w-[700px] lg:h-[450px] pointer-events-none` with inline style `background: radial-gradient(ellipse at center, rgba(191,140,96,0.06) 0%, transparent 65%)`
+This is the one light source — a soft, barely-there golden glow positioned behind the headline. It creates the subliminal sensation of illumination on the words without being visible as a shape. At 0.06 opacity, it should NOT be identifiable as "there's a glow there" — it should feel like the headline area is naturally slightly warmer.
+
+### Layer 3 — Grain Texture Overlay
+
+Procedural SVG noise that adds analog richness. The difference between a digital flat surface and textured paper:
+
+```jsx
+<svg className="absolute inset-0 w-full h-full pointer-events-none opacity-[0.035] mix-blend-overlay" xmlns="http://www.w3.org/2000/svg">
+  <filter id="heroGrain">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#heroGrain)"/>
+</svg>
+```
+
+Opacity at `0.035` to keep the grain ultra-subtle against the wine-dark background. The grain should add texture to dark surfaces without lightening them.
+
+### Layer 4 — Navigation (fixed top)
+
+The navigation bar sits at the top with its own background treatment that transitions on scroll. See the Navigation section below for full specification.
+
+### Layer 5 — Content (topmost — z-10)
+
+All text and CTA elements. The content is the ONLY place where light colors appear prominently. Text should feel like it's glowing softly out of the darkness — luminous words floating in shadow.
+
+### Vertical Content Distribution (top → bottom):
+
+```
+┌──────────────────────────────────────────────────────┐
+│  [NAV BAR]  Logo left ──────────── CTA right         │  ← fixed, z-50
+│                                                        │
+│                                                        │
+│       [EYEBROW]  Gold uppercase label                 │  ← centered
+│                                                        │
+│    [HEADLINE]  Large serif, one word in gold italic   │  ← centered, the star
+│                                                        │
+│       [SUBHEADLINE]  Supporting detail in beige       │  ← centered
+│                                                        │
+│       [CTA BUTTON]  Gold pill → WhatsApp              │  ← centered
+│       [MICRO-TEXT]  Trust signal below CTA            │  ← centered
+│                                                        │
+│                                                        │
+│       [SCROLL CUE]  "Descubra" + chevron              │  ← bottom center
+│  ─────────────── gold hairline ──────────────────────  │  ← absolute bottom
+└──────────────────────────────────────────────────────┘
+```
+
+The content block (eyebrow through micro-text) is **vertically centered** using `flex flex-col items-center justify-center` on the content layer, with `px-6` for mobile safety margins. Scroll cue is absolute-positioned at the bottom.
+
+---
+
+## Content Map (all visible text in Brazilian Portuguese)
+
+### Navigation Bar
+
+- **Logo:** `LOGO.png` (full logo with brand name). Max height `max-h-8 lg:max-h-10` — understated luxury, not shouting. Place on the left.
+- **Right side:** A single secondary CTA aligned with Master Briefing CTA language (NEVER "Fale Conosco" as primary): `"Quero minha marca"` → links to `WHATSAPP_URL`. Styled as a subtle outlined/ghost button — not the primary style (that's reserved for the hero CTA below).
+
+**Nav styling:**
+- `fixed top-0 left-0 right-0 z-50`
+- `px-4 py-4 lg:px-8 lg:py-5`
+- Inner container: `max-w-7xl mx-auto flex justify-between items-center`
+- Background: initially transparent. After scrolling ~80px, transition to `bg-[#2A1416]/80 backdrop-blur-md border-b border-[#BF8C60]/8` — the nav gets a subtle wine-dark glass treatment on scroll (uses the #2A1416 shadow layer, not a generic dark). Use `useState` + `useEffect` with throttled `scroll` listener (via `requestAnimationFrame`) to toggle a `scrolled` state.
+- Logo: `transition-opacity duration-500` — starts `opacity-90`, becomes `opacity-100` on scroll
+
+**"Quero minha marca" button styling (ghost/outline):**
+- `bg-transparent border border-[#BF8C60]/20 text-[#BF8C60] text-xs lg:text-sm font-medium tracking-wide`
+- Padding: `px-4 py-2 lg:px-5 lg:py-2.5`
+- Border radius: `rounded-full`
+- Hover (desktop): `hover:bg-[#BF8C60]/8 hover:border-[#BF8C60]/40 transition-all duration-300`
+- Intentionally restrained — the primary CTA below is the conversion hero. This nav CTA is for returning visitors.
+
+### Eyebrow Label
+```
+VINHOS FINOS · SERRA GAÚCHA · A PARTIR DE 60 GARRAFAS
+```
+- Font: DM Sans, weight 500
+- Size: `text-[10px] sm:text-xs`
+- Tracking: `tracking-[0.3em]`
+- Transform: `uppercase`
+- Color: `text-[#BF8C60]/80` — gold held back from full intensity
+- Middle dots (`·`) are literal interpuncts, same color
+- On mobile: may wrap to two lines — center-aligned, acceptable
+- Max width: `max-w-md mx-auto`
+
+### Headline (the star of the hero)
+```
+Sua Própria Marca de Vinhos Finos
+```
+- Font: Fraunces, weight 700
+- Size: `text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl`
+- Color: `text-[#D9BBA9]` — warm beige, luminous against wine-black
+- Line height: `leading-[0.92]` — tight, cinematic, editorial
+- Letter spacing: `tracking-[-0.025em]`
+- Alignment: `text-center`
+- Max width: `max-w-[18ch] sm:max-w-[20ch] lg:max-w-4xl xl:max-w-5xl mx-auto` — `ch` unit on mobile controls line breaks
+
+**CRITICAL TYPOGRAPHIC DETAIL — THE GOLD ITALIC WORD:**
+The word **"Finos"** must be rendered in:
+- Fraunces *italic* (`italic`)
+- Color: `text-[#BF8C60]` (gold — the one moment of bright warmth)
+- Use a `<span className="italic text-[#BF8C60]">` — keep Fraunces via inheritance
+
+This is the Tenuta Luce technique — it draws the eye, creates typographic rhythm, and communicates that this brand pays attention to details others miss. The headline should feel like an inscription carved into wine-black shadow, illuminated by the faint gold glow behind it.
+
+### Subheadline
+```
+Vinhos premium direto das melhores vinícolas da Serra Gaúcha, com rótulo exclusivo e a partir de apenas 60 garrafas.
+```
+- Font: DM Sans, weight 300 (light)
+- Size: `text-sm sm:text-base lg:text-lg`
+- Color: `text-[#D9BBA9]/60` — muted, receding behind the headline
+- Line height: `leading-relaxed`
+- Alignment: `text-center`
+- Max width: `max-w-sm sm:max-w-lg lg:max-w-2xl mx-auto`
+- Padding: `px-2` additional on mobile
+
+### Primary CTA Button (THE HERO CONVERSION ELEMENT)
+```
+Crie Sua Marca Agora
+```
+Drives to `WHATSAPP_URL`. Uses CTA language aligned with Master Briefing ("Crie sua marca" is explicitly approved).
+
+**Button construction:**
+- Use an `<a>` tag styled as a button for direct WhatsApp linking: `<a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer">`
+- Background: `bg-[#BF8C60]` — the ONE prominent gold element in the entire hero. A glowing ember in the wine-dark.
+- Text: `text-[#1A0F10]` — reversed dark wine-black on gold for maximum contrast, `font-semibold`, DM Sans
+- Icon: `<MessageCircle />` from Lucide, `size={16} lg:size={18}`, placed LEFT of text with `gap-2.5`
+- Padding: `px-8 py-4 lg:px-10 lg:py-5` — generous, luxurious
+- Border radius: `rounded-full` (pill)
+- Width: `w-full sm:w-auto` — full-width on mobile, content-width on desktop
+- Min touch target: padding ensures 48px+ height on mobile
+- Subtle border: `ring-1 ring-[#BF8C60]/20` — barely visible, adds definition against wine-black
+
+**Hover state (desktop only):**
+- `hover:bg-[#D9BBA9]` — gold warms to lighter beige
+- `hover:shadow-[0_0_35px_rgba(191,140,96,0.22)]` — gold glow emanates outward (under Master's 0.22 ceiling for interaction states, not ambient)
+- `hover:ring-[#BF8C60]/40` — ring intensifies
+- `hover:scale-[1.02]` — subtle lift
+- Icon: `group-hover:rotate-12 transition-transform duration-500`
+- `transition-all duration-500 ease-out`
+- Add `group` class to button wrapper for icon interaction
+
+**Active/tap state (mobile):**
+- `active:scale-[0.97]` — tactile press feedback
+- `active:bg-[#8C3D20]` — shifts to clay brown, feels like pressing into warm material
+- `duration-150` — quick response
+
+### Secondary Micro-text (below CTA)
+```
+Atendimento personalizado via WhatsApp
+```
+- Font: DM Sans, weight 400
+- Size: `text-[11px] lg:text-xs`
+- Color: `text-[#D9BBA9]/30` — extremely muted, ghostly. A subconscious trust signal.
+- Tracking: `tracking-wider`
+- Margin: `mt-3` from CTA
+
+### Scroll Indicator (bottom of viewport)
+```
+Descubra
+```
+- Font: DM Sans
+- Size: `text-[10px] lg:text-xs`
+- Tracking: `tracking-[0.25em]`
+- Transform: `uppercase`
+- Color: `text-[#BF8C60]/40` — ghost of gold
+- Position: `absolute bottom-6 lg:bottom-8 left-1/2 -translate-x-1/2`
+- Below text: `<ChevronDown size={14} strokeWidth={1} />` from Lucide, same `text-[#BF8C60]/40`
+- Layout: `flex flex-col items-center gap-1`
+- Make it a `<button>` — onClick smooth-scrolls to next fold: `document.getElementById('fold-2')?.scrollIntoView({ behavior: 'smooth' })`
+- Cursor: `cursor-pointer`
+
+**Infinite animation (after entrance):**
+```jsx
+<motion.div
+  animate={{ y: [0, 5, 0] }}
+  transition={{ duration: 2.8, ease: "easeInOut", repeat: Infinity, repeatDelay: 0.5 }}
+>
+```
+
+### Gold Hairline (absolute bottom edge)
+A full-width decorative seam between hero and next fold:
+- `absolute bottom-0 left-0 w-full h-px z-10`
+- `bg-gradient-to-r from-transparent via-[#BF8C60]/20 to-transparent` — 20% opacity, nearly invisible. A whisper of gold marking the transition.
+
+---
+
+## Animation & Motion Specification
+
+### Parallax Background (desktop only, reduced-motion aware)
+
+```jsx
+const [isMobile, setIsMobile] = useState(true);
+const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+useEffect(() => {
+  setIsMobile(window.innerWidth < 1024);
+  setPrefersReducedMotion(window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+  
+  const handleResize = () => setIsMobile(window.innerWidth < 1024);
+  window.addEventListener('resize', handleResize);
+  return () => window.removeEventListener('resize', handleResize);
+}, []);
+
+const heroRef = useRef(null);
+const { scrollYProgress } = useScroll({
+  target: heroRef,
+  offset: ["start start", "end start"]
+});
+const backgroundY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
+const enableParallax = !isMobile && !prefersReducedMotion;
+```
+
+Apply `backgroundY` as the `y` style on `<motion.div>` wrapping the image — ONLY when `enableParallax` is true. On mobile or reduced-motion, render a static `absolute` image with no transforms.
+
+### Nav Scroll Detection
+
+```jsx
+const [navScrolled, setNavScrolled] = useState(false);
+
+useEffect(() => {
+  let ticking = false;
+  const handleScroll = () => {
+    if (!ticking) {
+      requestAnimationFrame(() => {
+        setNavScrolled(window.scrollY > 80);
+        ticking = false;
+      });
+      ticking = true;
+    }
+  };
+  window.addEventListener('scroll', handleScroll, { passive: true });
+  return () => window.removeEventListener('scroll', handleScroll);
+}, []);
+```
+
+Apply to nav via conditional class.
+
+### Content Entrance Choreography
+
+All content elements animate on mount — the hero is above the fold. Use Framer Motion with staggered delays:
+
+| Element | Delay | Duration | Initial State | Animate To | Easing |
+|---|---|---|---|---|---|
+| Nav (logo + CTA) | 0ms | 800ms | `opacity: 0, y: -15` | `opacity: 1, y: 0` | `[0.22, 1, 0.36, 1]` |
+| Eyebrow label | 200ms | 700ms | `opacity: 0, y: 25` | `opacity: 1, y: 0` | `[0.22, 1, 0.36, 1]` |
+| Headline | 400ms | 900ms | `opacity: 0, y: 35` | `opacity: 1, y: 0` | `[0.22, 1, 0.36, 1]` |
+| Subheadline | 600ms | 700ms | `opacity: 0, y: 25` | `opacity: 1, y: 0` | `[0.22, 1, 0.36, 1]` |
+| CTA button | 800ms | 700ms | `opacity: 0, y: 15, scale: 0.96` | `opacity: 1, y: 0, scale: 1` | `[0.22, 1, 0.36, 1]` |
+| Micro-text | 950ms | 600ms | `opacity: 0` | `opacity: 1` | `easeOut` |
+| Scroll indicator | 1300ms | 600ms | `opacity: 0, y: 8` | `opacity: 1, y: 0` | `easeOut` |
+| Gold hairline | 1500ms | 900ms | `scaleX: 0` | `scaleX: 1` | `[0.22, 1, 0.36, 1]` |
+
+The easing `[0.22, 1, 0.36, 1]` is the project's signature cubic-bezier — used across ALL folds for visual consistency.
+
+Gold hairline uses `style={{ transformOrigin: 'center' }}` — line draws from center outward.
+
+**On mobile:** Simplify all entrances to opacity-only fades (remove `y` translations) to avoid perceived layout shifts on slower devices. Keep stagger timing.
+
+**If `prefersReducedMotion` is true:** Skip all entrance animations — render at final state immediately. No parallax, no stagger, no bouncing indicator.
+
+### Framer Motion Implementation Pattern
+
+```jsx
+<motion.h1
+  initial={prefersReducedMotion ? false : { opacity: 0, y: isMobile ? 0 : 35 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ duration: 0.9, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
+>
+```
+
+Setting `initial` to `false` under reduced motion skips the animation entirely.
+
+---
+
+## Sticky Mobile WhatsApp Bar
+
+Persistent conversion tool for mobile. Appears AFTER the hero leaves the viewport:
+
+### Visibility Logic
+- Hidden initially
+- Appears when hero scrolls mostly out of view
+- Use `useScroll` on hero ref, track `scrollYProgress`:
+
+```jsx
+const [showMobileCTA, setShowMobileCTA] = useState(false);
+
+useEffect(() => {
+  const unsubscribe = scrollYProgress.on("change", (v) => {
+    setShowMobileCTA(v > 0.75);
+  });
+  return () => unsubscribe();
+}, [scrollYProgress]);
+```
+
+- Show ONLY on mobile — entire wrapper has `lg:hidden`
+
+### Layout & Styling
+- `fixed bottom-0 left-0 right-0 z-50 lg:hidden`
+- `px-4 pt-2` plus `pb-[max(1rem,env(safe-area-inset-bottom))]` for notched phones
+- Background: `bg-[#1A0F10]/95 backdrop-blur-lg border-t border-[#BF8C60]/8` — uses wine-black (NOT green-black), heavier blur for refined glass
+
+### Button Inside
+- Full-width pill: `w-full rounded-full py-3.5 flex items-center justify-center gap-2`
+- `bg-[#BF8C60] text-[#1A0F10] font-semibold text-sm`
+- Icon: `<MessageCircle size={16} />`
+- Text: `"Crie Sua Marca Agora"`
+- `active:scale-[0.97] active:bg-[#8C3D20] transition-all duration-150`
+
+### Entrance Animation
+```jsx
+<AnimatePresence>
+  {showMobileCTA && (
+    <motion.div
+      initial={{ y: 80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: 80, opacity: 0 }}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className="fixed bottom-0 left-0 right-0 z-50 lg:hidden ..."
+    >
+      {/* button content */}
+    </motion.div>
+  )}
+</AnimatePresence>
+```
+
+---
+
+## Responsive Behavior
+
+### Mobile (default — 375px baseline, PRIMARY design target)
+
+- Hero: `min-h-[100dvh]` — dynamic viewport handles mobile browser chrome
+- Background image: `position: absolute` (no parallax), `brightness(0.25)` — even darker on mobile
+- Nav: `px-4 py-3`, logo `max-h-7`, "Quero minha marca" `text-[10px] px-3 py-1.5`
+- Eyebrow: `text-[10px]`, `tracking-[0.25em]`, may wrap — centered, acceptable
+- Headline: `text-4xl`, `leading-[0.92]`, `px-6` — dramatic, contained
+- Subheadline: `text-sm`, `text-[#D9BBA9]/55`, `px-4`
+- CTA: `w-full py-4 text-base` — full-width, generous tap target
+- Micro-text: `text-[10px]`
+- Scroll indicator: `bottom-5`
+- Content gap: `gap-5`
+- Entrance animations: opacity-only fades
+- Grain overlay: `opacity-[0.03]` — slightly reduced
+- Gold glow: `w-[350px] h-[250px]` — scaled down
+
+### Small Mobile (320px — iPhone SE)
+- Headline: consider `text-[2rem]` if `text-4xl` overflows
+- Eyebrow: `text-[9px]` if needed
+- CTA padding: `px-6 py-3.5` — tighter but above 44px
+
+### Tablet (`md:` — 768px)
+- Headline: `md:text-6xl`
+- Subheadline: `md:text-base`
+- CTA: `md:w-auto md:px-10`
+- Nav: `md:px-6 md:py-4`
+- Content gap: `md:gap-6`
+
+### Desktop (`lg:` — 1024px)
+- Background: `position: fixed` with parallax (25% travel)
+- Image brightness: `brightness(0.3)`
+- Headline: `lg:text-7xl`
+- Subheadline: `lg:text-lg`, `text-[#D9BBA9]/60`
+- Nav: `lg:px-8 lg:py-5`, logo `lg:max-h-10`, CTA: `lg:text-sm lg:px-5 lg:py-2.5`
+- Content gap: `lg:gap-7`
+- Full entrance choreography with y-translations
+- Gold glow: `lg:w-[700px] lg:h-[450px]`
+
+### Large Desktop (`xl:` — 1280px+)
+- Headline: `xl:text-8xl`
+- Content max-width: `max-w-5xl`
+- Image loads `w=1400` variant via `srcSet`
+
+---
+
+## Placeholder Image Configuration
+
+Declare at the top of the component file:
+
+```jsx
+// ============================================
+// CONFIGURATION — Replace with real brand photography
+// ============================================
+const WHATSAPP_URL = "https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20criar%20minha%20pr%C3%B3pria%20marca%20de%20vinhos%20com%20a%20Adega%20Pr%C3%B3pria.";
+
+const HERO_IMAGES = {
+  desktop: "https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?w=1400&auto=format&fit=crop&q=80",
+  mobile: "https://images.unsplash.com/photo-1516594915697-87eb3b1c14ea?w=800&auto=format&fit=crop&q=80",
+};
+// Alternatives — dark wine cellar imagery:
+// "https://images.unsplash.com/photo-1506377247377-2a5b3b417ebb?w=1400&auto=format&fit=crop&q=80"
+// "https://images.unsplash.com/photo-1553361371-9b22f78e8b1d?w=1400&auto=format&fit=crop&q=80"
+// "https://images.unsplash.com/photo-1560493676-04071c5f467b?w=1400&auto=format&fit=crop&q=80"
+```
+
+**Image delivery:**
+```jsx
+<img
+  src={HERO_IMAGES.mobile}
+  srcSet={`${HERO_IMAGES.mobile} 800w, ${HERO_IMAGES.desktop} 1400w`}
+  sizes="100vw"
+  alt="Interior de adega com barris de carvalho"
+  className="absolute inset-0 w-full h-full object-cover brightness-[0.25] lg:brightness-[0.3]"
+  loading="eager"
+  fetchPriority="high"
+/>
+```
+
+Note `loading="eager"` and `fetchPriority="high"` — hero image loads immediately.
+
+---
+
+## Quality Checklist
+
+Verify before marking complete:
+
+**Visual & Brand:**
+- [ ] Primary canvas is `#1A0F10` (wine-black), NOT `#012626` (green-black)
+- [ ] Overall impression is DARK WINE — never reads as green at any scroll position
+- [ ] Visual weight distribution respects Master percentages (`#1A0F10` 45-55%, etc.)
+- [ ] Gold and beige appear ONLY as text, CTA, borders, subtle glows — never large surfaces
+- [ ] No generic gradients — all use brand hex values
+- [ ] No emoji anywhere
+- [ ] Background image is dramatically darkened (brightness 0.25-0.30) — felt, not seen
+- [ ] All 6 overlay layers present and calibrated
+- [ ] Feels like a candlelit wine cellar, not a stock photo with dark overlay
+
+**Atmospheric Glow Opacity (Master 0.04-0.10 ceiling):**
+- [ ] Gold glow behind headline: 0.06 ✓
+- [ ] Wine-red atmospheric wash: 0.08 ✓
+- [ ] Clay warmth: 0.05 ✓
+- [ ] No ambient glow exceeds 0.10
+- [ ] CTA hover glow (interaction-bound) may reach 0.22 only on hover
+
+**Typography:**
+- [ ] Fraunces loaded, rendering on headline
+- [ ] "Finos" in Fraunces italic AND `#BF8C60` gold — visually distinct
+- [ ] DM Sans loaded for body, eyebrow, UI
+- [ ] Text readable at all breakpoints
+- [ ] Headline doesn't overflow at 375px
+
+**Interaction & Conversion:**
+- [ ] Nav CTA reads "Quero minha marca" (NOT "Fale Conosco")
+- [ ] Primary CTA reads "Crie Sua Marca Agora"
+- [ ] Both CTAs wired to `WHATSAPP_URL`
+- [ ] CTA minimum 48px touch target on mobile
+- [ ] CTA full-width mobile, content-width desktop
+- [ ] Sticky WhatsApp bar appears on mobile after scroll, `lg:hidden`
+- [ ] Sticky bar uses `#1A0F10/95` background (wine-black)
+- [ ] Safe-area padding for notched phones
+- [ ] Scroll indicator is `<button>`, smooth-scrolls to next fold
+- [ ] Nav gets `#2A1416/80` glass background on scroll (80px threshold)
+
+**Motion:**
+- [ ] Parallax on desktop only, disabled on mobile
+- [ ] Entrance stagger: nav → eyebrow → headline → subheadline → CTA → micro-text → scroll cue → hairline
+- [ ] Signature easing `[0.22, 1, 0.36, 1]` used throughout
+- [ ] Gold hairline animates scaleX from center
+- [ ] Scroll indicator has infinite gentle bounce
+- [ ] `prefers-reduced-motion` fully respected
+- [ ] Mobile entrances are opacity-only (no y)
+
+**Technical:**
+- [ ] Single `.jsx` file, `export default`
+- [ ] No `localStorage` or `sessionStorage`
+- [ ] Inline styles only for complex radial gradients
+- [ ] All visible text in Brazilian Portuguese
+- [ ] No horizontal overflow at 375px
+- [ ] Grain texture performant on mobile
+- [ ] Image uses `loading="eager"` and `fetchPriority="high"`
+- [ ] Component fully self-contained
+
+**The Dribbble Test:**
+- [ ] Would you be proud to screenshot at 375px and post on Dribbble?
+- [ ] Would you be proud to screenshot at 1440px and post on Dribbble?
+- [ ] Feels like luxury wine brand, not SaaS template with dark colors?
+- [ ] Reads as WINE-DARK, not green-dark?
