@@ -1,0 +1,733 @@
+# FOLD 4 — CTA INTERSTITIAL | Adega Própria Landing Page
+
+---
+
+## Role & Design Philosophy
+
+You are a senior UI designer and frontend developer building the **conversion interstitial** of the Adega Própria landing page — the unignorable pause where three folds of emotional accumulation (hero aspiration → video persuasion → manifesto soul) collapse into a single question: *now?*
+
+This is the first CTA since Fold 1. That gap is architectural. The visitor has traveled a long way since they last saw a button, and Fold 4 exists to honor that distance — to stop the page, demand a decision, and provide the elegant mechanism for saying yes. It is **the conversion cut**: the moment the page shifts register from storytelling to invitation.
+
+Build a premium, **wine-dark** interstitial that functions like an editorial pull quote scaled to room-filling presence. A giant Fraunces declaration, centered, weighted like it was carved into cellar stone. A single gold italic word carrying the psychological thesis of the entire page. One CTA. One trust signal. Nothing else. This fold is a closed door with a gold handle — the visitor opens it or keeps scrolling.
+
+**This is the darkest fold on the page.** Every prior fold has operated in the same atmospheric range: wine-black dominance with subtle wine-red and clay washes. Fold 4 pushes deeper — `#1A0F10` becomes near-total shadow at the edges, `#A62C21` comes forward as a deliberate atmospheric presence (still within the Master's 0.04–0.10 opacity ceiling, still disciplined), and the signature gold whispers in exactly three places: the italic word, the CTA pill, and a **vertical gold hairline that draws from ceiling to floor behind the headline** — a visual axis signaling the page is physically centering on this decision.
+
+**The darkness is wine-red, not green.** Canvas is `#1A0F10`. Shadow layer is `#2A1416`. Warm depths are `#8C3D20` and `#A62C21`. Gold and beige appear only in the three loci above. Never green. Never bright. Never loud. The fold must feel like walking from the candlelit cellar into its deepest chamber, where the only warmth is the bottle you're about to uncork.
+
+**Reference energy for this specific fold:**
+- **Tenuta Luce** — the editorial pull quote approach, italic serif at declarative scale
+- **Pasqua** — the cinematic interruption, a section that stops the visitor mid-scroll
+- **Kettmeir** — typographic restraint, generous darkness around the type
+
+**Design mandates (non-negotiable):**
+- No image. No split layout. No card. No countdown timer or scarcity tactic (destroys luxury).
+- No emoji icons. No generic gradients. No inline styles (except for complex radial gradients Tailwind cannot express).
+- No secondary "learn more" ghost button. Exactly one CTA.
+- Typography must be intentional — continue the Fraunces + DM Sans pairing established in Folds 1, 2, 3.
+- The Fraunces headline in this fold is **the largest type on the entire landing page**. It must earn that scale by being brief and emotionally loaded.
+- Mobile-first: design for 375px, then enhance for desktop.
+- The fold must pass the "screenshot test" — captured as a still, it should read as a luxury wine brand manifesto, not a conversion section.
+
+---
+
+## Tech Stack (imports for this fold)
+
+```jsx
+import { useState, useEffect, useRef } from "react";
+import { motion, useInView } from "framer-motion";
+import { MessageCircle, ArrowUpRight } from "lucide-react";
+```
+
+Two Lucide icons only. `MessageCircle` sits inside the CTA pill (continuing the Fold 1 convention — WhatsApp destinations always carry this icon). `ArrowUpRight` sits at the pill's trailing edge, signaling outward navigation (new tab, new conversation). Both `strokeWidth={1.5}` for luxurious line weight.
+
+**Google Fonts import** (place at the top of the file, inside a `<style>` block rendered by the component):
+
+```css
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,400;1,9..144,700&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap');
+```
+
+---
+
+## Design Tokens (Master Briefing — Wine-Red Dark Palette)
+
+Continuing the established design system from Folds 1, 2, 3. **Primary canvas is wine-black, never green. Fold 4 pushes the darkness further than any prior fold.**
+
+```
+DARK DOMINANT TONES (90%+ of visual space for this fold — pushed deeper):
+  Canvas (primary):    bg-[#1A0F10]       ← deep wine-black base, pushed toward total shadow at edges
+  Shadow layer:        bg-[#2A1416]       ← dark red-black, vertical axis line glow basin
+  Warm depth:          bg-[#8C3D20]       ← reddish brown, subtle off-center wash
+  Emotional depth:     bg-[#A62C21]       ← deep wine red, the atmospheric "heartbeat" of this fold
+
+ACCENT TONES (used in exactly three loci):
+  Gold:                text-[#BF8C60]     ← italic word, CTA pill, vertical axis
+  Warm beige:          text-[#D9BBA9]     ← headline body, trust signal
+
+TEXT HIERARCHY:
+  Display headline:    text-[#D9BBA9]     ← full opacity, maximum luminosity against near-black
+  Italic emphasis:     text-[#BF8C60]     ← gold, ONE word ("merece")
+  Supporting line:     text-[#D9BBA9]/60  ← muted, receding
+  Trust micro-text:    text-[#D9BBA9]/45  ← whisper-weight, subconscious confidence signal
+  CTA button text:     text-[#1A0F10]     ← reversed dark-on-gold for maximum contrast
+
+BORDERS (felt more than seen):
+  Near-invisible gold: border-[#BF8C60]/10
+  CTA base ring:       ring-[#BF8C60]/25
+  CTA hover ring:      hover:ring-[#BF8C60]/50
+
+ATMOSPHERIC GLOW OPACITY (Master rule: 0.04 – 0.10 MAX ambient):
+  Wine-red heartbeat (center):     rgba(166,44,33,0.09)   ← pushed toward the ceiling, the fold's signature presence
+  Clay warmth (lower-right):       rgba(140,61,32,0.05)   ← asymmetric balance
+  Gold axis glow (behind line):    rgba(191,140,96,0.07)  ← softens the vertical hairline
+  Edge shadow wash:                rgba(0,0,0,0.6)        ← radial vignette, pushes edges to black
+
+INTERACTION GLOWS (interaction-bound, may exceed ambient ceiling):
+  CTA hover glow:                  rgba(191,140,96,0.30)  ← expanding gold halo on pill hover
+  CTA shimmer edge:                rgba(217,187,169,0.4)  ← traveling light around pill border
+```
+
+**Visual Weight Distribution — MANDATORY (Fold 4 runs darker than standard):**
+- `#1A0F10` → **50–58%** of visual space (pushed from Master's 45–55% baseline — this is the darkest fold)
+- `#2A1416` → **20–25%**
+- `#8C3D20` → **10–14%**
+- `#A62C21` → **10–14%** (pushed from 8–12% baseline — wine-red is deliberately more present in this fold)
+- `#BF8C60` → **3–5%** (pushed BELOW Master's 5–8% ceiling — gold is rarer here, making its three appearances precious)
+- `#D9BBA9` → **text only** — the headline and trust signal
+
+If you sampled the fold at any scroll position, wine-dark must dominate. The three gold moments (italic word, CTA, vertical axis) should feel like the only light in a cellar at midnight.
+
+---
+
+## Layout Architecture
+
+The fold is a **content-sized interstitial with commanding vertical presence**. Section height: `min-h-[85vh] lg:min-h-[90vh]` — tall enough to fully interrupt the scroll, short enough to avoid the "another hero" feeling. NOT `100dvh`. The fold breathes into its neighbors with top and bottom transition seams.
+
+Root:
+```jsx
+
+```
+
+### Vertical Content Distribution (top → bottom):
+
+```
+┌──────────────────────────────────────────────────────────────────┐
+│  [HAIRLINE TOP]  Gold gradient seam from Fold 3                  │
+│                                                                    │
+│                     ─────────────────                              │
+│                  (ceiling space, ~15vh)                           │
+│                                                                    │
+│                      [EYEBROW]                                     │
+│                    │  A DECISÃO                                    │
+│                      (vertical tick + label, new convention)      │
+│                                                                    │
+│        ┃                                                           │
+│        ┃                                                           │
+│        ┃     [GIANT HEADLINE]  Fraunces 400                       │
+│        ┃     A marca que sua história merece.                     │
+│        ┃     ├─ vertical gold hairline axis behind ─┤             │
+│        ┃     (scales from 0 to full height on entrance)           │
+│        ┃                                                           │
+│        ┃                                                           │
+│                                                                    │
+│        [SUPPORTING LINE]  DM Sans 300, 60% opacity                │
+│     Nós cuidamos do vinho, do rótulo, do engarrafamento e         │
+│                 da entrega. Você cuida da história.                │
+│                                                                    │
+│                                                                    │
+│                  [CTA PILL]  Gold, larger than hero's             │
+│                  [MessageCircle] Crie Sua Marca Agora [↗]         │
+│                                                                    │
+│                   [TRUST MICRO-TEXT]                               │
+│           Resposta em até 2 horas · Segunda a Sábado              │
+│                                                                    │
+│                  (floor space, ~12vh)                              │
+│                     ─────────────────                              │
+│                                                                    │
+│  [HAIRLINE BOTTOM]  Gold gradient seam to Fold 5                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+All content is vertically centered via `flex items-center justify-center` on the section, then stacked as a single `max-w-5xl mx-auto` column with `flex flex-col items-center`.
+
+### Grid System
+
+**All breakpoints:**
+- Root container: `max-w-5xl mx-auto px-6 lg:px-12` — intimate and focused. Narrower than Fold 3's `max-w-7xl` (editorial spread), narrower than Fold 2's `max-w-6xl` (contained screening). The container width itself signals intimacy: *this is the moment*.
+- Single column, center-aligned everything
+- The **vertical gold hairline axis** sits at exactly `left-1/2 -translate-x-1/2`, running from the top of the headline zone to the bottom of the trust signal — it's the spine the content hangs on
+
+### Spacing Rhythm
+
+- Eyebrow → Headline: `mt-0` (eyebrow is tight to headline, `mb-10 lg:mb-14`)
+- Headline → Supporting line: `mt-10 lg:mt-14`
+- Supporting line → CTA: `mt-12 lg:mt-16` (generous breath — the reader should finish the supporting line and arrive at the CTA deliberately)
+- CTA → Trust micro-text: `mt-5 lg:mt-6` (tight — trust signal belongs to the CTA)
+
+---
+
+## Content Map (all visible text in Brazilian Portuguese)
+
+### 1. Eyebrow Label (new convention — vertical tick, not em-dashes)
+
+```
+│  A DECISÃO
+```
+
+- Font: DM Sans, weight 500
+- Size: `text-[10px] sm:text-xs`
+- Tracking: `tracking-[0.35em]`
+- Transform: `uppercase`
+- Color: `text-[#BF8C60]/70`
+- Alignment: `text-center`
+
+**Composition detail — the vertical tick is decorative, not typographic:**
+Render the `│` as a separate absolute-positioned element (a 1px × 12px gold line), not as the Unicode character. This gives you precise control over weight, opacity, and entrance animation.
+
+```jsx
+
+  
+  
+    A DECISÃO
+  
+
+```
+
+This introduces a **new eyebrow convention** for the page — distinct from the interpuncts of Fold 1 and the em-dash flanks of Folds 2, 3. The vertical tick signals "this fold is different." Use this convention only in Fold 4 (future conversion-oriented folds may echo it).
+
+### 2. Giant Headline (the largest type on the entire landing page)
+
+```
+A marca que sua história merece.
+```
+
+- Font: Fraunces, weight 400
+- Size: `text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-[9rem]`
+- Color: `text-[#D9BBA9]`
+- Line height: `leading-[0.95]` — tight, cinematic, carved
+- Letter spacing: `tracking-[-0.03em]` — slightly more condensed than other folds, giving the massive type a sculpted edge
+- Alignment: `text-center`
+- Max width: `max-w-[14ch] sm:max-w-[16ch] md:max-w-[18ch] lg:max-w-4xl mx-auto` — the `ch` unit controls line breaks elegantly across breakpoints
+- Weight choice rationale: 400 (not 700 like Fold 1 Hero) because this is meditative declaration, not aspirational shout. The scale does the shouting; the weight stays refined.
+
+**CRITICAL TYPOGRAPHIC DETAIL — THE GOLD ITALIC WORD:**
+
+The word **"merece"** must be rendered in:
+- Fraunces *italic* (`italic`)
+- Color: `text-[#BF8C60]` (gold)
+- Wrap: `<span className="italic text-[#BF8C60]">merece</span>`
+
+**Why "merece" carries this fold:** The entire sales psychology of Adega Própria — that the visitor deserves prestige, that this is not a purchase but a claim on something already owed — collapses into this one word. The italic gold treatment makes it the emotional pivot of the declaration. It is the hinge the whole fold swings on.
+
+This continues the Tenuta Luce gold-italic-word technique established in every prior fold. Visual consistency: Fold 1 "Finos" → Fold 2 "única" → Fold 3 "herança"/"marcas" → Fold 4 "merece."
+
+### 3. Supporting Line (beneath headline)
+
+```
+Nós cuidamos do vinho, do rótulo, do engarrafamento e da entrega. Você cuida da história.
+```
+
+- Font: DM Sans, weight 300 (light)
+- Size: `text-base sm:text-lg lg:text-xl`
+- Color: `text-[#D9BBA9]/60`
+- Line height: `leading-relaxed`
+- Letter spacing: default
+- Alignment: `text-center`
+- Max width: `max-w-xl sm:max-w-2xl lg:max-w-3xl mx-auto`
+
+**Copy rationale:** This is the entire service collapsed into two sentences — the first lists the labor Adega Própria assumes (sourcing, labeling, bottling, delivery), the second returns agency to the visitor ("Você cuida da história"). It reframes the proposition: the brand is the story the visitor already has; Adega Própria is simply the operator that lets it exist as wine. No feature-list energy. Pure elegant division of roles.
+
+### 4. CTA Pill (the hero CTA's confident older sibling)
+
+```
+Crie Sua Marca Agora
+```
+
+**Icon composition:** `<MessageCircle />` leading + `<ArrowUpRight />` trailing. The hero CTA had only the MessageCircle; this one adds the trailing arrow. Why: the hero's CTA is an invitation ("come in"), this one is a commitment ("we're going out to the conversation").
+
+Destination: `WHATSAPP_URL` (declared at top of file, matching Fold 1's convention).
+
+**Button construction:**
+- Use an `<a>` tag styled as a button for direct WhatsApp linking
+- `<a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" className="group relative inline-flex items-center gap-3 ...">`
+- Background: `bg-[#BF8C60]`
+- Text: `text-[#1A0F10]`, `font-semibold`, DM Sans
+- Leading icon: `<MessageCircle size={18} strokeWidth={1.5} />` lg:size={20}
+- Trailing icon: `<ArrowUpRight size={16} strokeWidth={1.5} />` lg:size={18}
+- Padding: `px-10 py-5 lg:px-12 lg:py-6` — larger than Fold 1's `px-8 py-4` (this CTA is slightly oversized vs. the hero's, signaling weight)
+- Border radius: `rounded-full` (pill)
+- Width: `w-full sm:w-auto` — full-width mobile, content-width desktop
+- Text size: `text-base lg:text-lg` — slightly larger than hero's
+- Base ring: `ring-1 ring-[#BF8C60]/25` — more visible than hero's `/20`, this CTA earns presence
+
+**Hover state (desktop only) — the shimmer detail:**
+
+The CTA includes a **subtle animated border shimmer** that the hero CTA does not have — a barely-perceptible whisper of lighter gold traveling around the pill's edge, only visible on hover. This is the micro-detail that signals "this CTA matters more":
+
+```jsx
+{/* Inside the  — absolute shimmer overlay, hidden until hover */}
+
+```
+
+And in the `<style>` block:
+
+```css
+@keyframes shimmer {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+```
+
+This creates a slow horizontal light sweep that only appears while the pointer is on the pill. Never visible at rest. Subconscious premium signal.
+
+Additional hover state (on top of shimmer):
+- `hover:bg-[#D9BBA9]` — gold warms to lighter beige
+- `hover:shadow-[0_0_50px_rgba(191,140,96,0.3)]` — expanding gold halo
+- `hover:ring-[#BF8C60]/50` — ring intensifies
+- `hover:scale-[1.02]` — subtle lift
+- Leading icon: `group-hover:scale-110 transition-transform duration-500`
+- Trailing icon: `group-hover:translate-x-1 group-hover:-translate-y-0.5 transition-transform duration-500` — the arrow tilts up-and-out, physicalizing outward motion
+- All transitions: `transition-all duration-500 ease-out`
+
+**Active/tap state (mobile):**
+- `active:scale-[0.97]` — tactile press
+- `active:bg-[#8C3D20]` — deep clay on press, feels like pressing into warm material
+- `duration-150` — quick response
+
+**Focus-visible:**
+- `focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#BF8C60] focus-visible:ring-offset-4 focus-visible:ring-offset-[#1A0F10]`
+
+### 5. Trust Micro-text (beneath CTA — the new detail)
+
+```
+Resposta em até 2 horas · Segunda a Sábado
+```
+
+- Font: DM Sans, weight 400
+- Size: `text-xs lg:text-sm`
+- Tracking: `tracking-[0.15em]` — gentle spacing, not the editorial `0.3em` of an eyebrow
+- Transform: sentence case (not uppercase — uppercase would compete with the eyebrow)
+- Color: `text-[#D9BBA9]/45`
+- Alignment: `text-center`
+- Margin: `mt-5 lg:mt-6`
+
+**Why this copy, not Fold 1's "Atendimento personalizado via WhatsApp":**
+
+Fold 1's trust signal was atmospheric — it reassured the visitor that the channel is human. Fold 4's trust signal is **contractual** — it makes a concrete promise about response time and hours. This shift tracks the visitor's journey: by Fold 4, they've consumed enough content to be evaluating commitment. They need to know what happens after they tap. "Resposta em até 2 horas · Segunda a Sábado" answers that question directly without breaking the premium register.
+
+The interpunct (`·`) is literal, continuing the page's typographic convention.
+
+---
+
+## Component Breakdown (DOM hierarchy)
+
+```
+<section id="fold-4">  ← Root: relative, w-full, overflow-hidden, bg-[#1A0F10], min-h-[85vh] lg:min-h-[90vh], flex items-center justify-center, py-24 md:py-32 lg:py-40
+  │
+  ├── <div>  ← Top hairline seam: absolute top-0 left-0 w-full h-px, gold gradient
+  │
+  ├── <div>  ← Atmospheric layer: absolute inset-0, pointer-events-none, z-0
+  │   ├── <div>  ← Radial edge vignette (pushes edges to black)
+  │   ├── <div>  ← Wine-red heartbeat (center, 0.09 opacity)
+  │   ├── <div>  ← Clay warmth (lower-right, 0.05 opacity)
+  │   └── <div>  ← Gold axis glow (soft halo behind vertical line, 0.07 opacity)
+  │
+  ├── <svg>  ← Grain texture overlay (feTurbulence, opacity 0.03, mix-blend-overlay)
+  │
+  ├── <motion.div>  ← Vertical gold hairline axis (absolute, left-1/2, scaleY entrance)
+  │
+  ├── <div>  ← Main content: relative z-10, max-w-5xl mx-auto px-6 lg:px-12, flex flex-col items-center
+  │   │
+  │   ├── <motion.div>  ← Eyebrow group (vertical tick + "A DECISÃO")
+  │   │   ├── <span>    ← Vertical tick (1px × 12px gold)
+  │   │   └── <span>    ← "A DECISÃO" label
+  │   │
+  │   ├── <motion.h2>   ← Giant headline with italic gold "merece"
+  │   │
+  │   ├── <motion.p>    ← Supporting line
+  │   │
+  │   ├── <motion.div>  ← CTA wrapper (contains the <a> pill)
+  │   │   └── <a>       ← CTA pill with shimmer overlay
+  │   │       ├── <span>  ← Shimmer gradient (absolute, hover-activated)
+  │   │       ├── <MessageCircle />  ← Lucide icon, leading
+  │   │       ├── "Crie Sua Marca Agora"
+  │   │       └── <ArrowUpRight />   ← Lucide icon, trailing
+  │   │
+  │   └── <motion.p>    ← Trust micro-text
+  │
+  └── <div>  ← Bottom hairline seam: absolute bottom-0 left-0 w-full h-px, gold gradient
+```
+
+---
+
+## The Vertical Gold Hairline Axis (signature element)
+
+This is the fold's theatrical move — a **1px vertical gold line** positioned at horizontal center, running from the top of the headline zone to the bottom of the trust signal. It visualizes the page axis the content hangs on. On entrance, it draws from top to bottom over 1.4 seconds.
+
+### Positioning
+
+- `absolute top-[22%] lg:top-[20%] left-1/2 -translate-x-1/2 w-px z-[5]`
+- Height: ends at `bottom-[12%] lg:bottom-[10%]` (frames the content block without touching edges)
+- Use inline `top`/`bottom` for precise control, or compute height explicitly
+
+### Visual Treatment
+
+Not a solid line. A **gradient line with soft ends** — fades into the darkness at top and bottom, strongest at the center:
+
+```jsx
+
+```
+
+The center peak opacity of `0.35` feels gold but stays disciplined. The soft ends prevent it from feeling like a harsh ruler dividing the fold.
+
+### Behind the Axis — Subtle Glow
+
+Behind the hairline, a very faint vertical gold glow (the "softener"):
+
+- `absolute left-1/2 -translate-x-1/2 w-16 lg:w-24 z-[4] pointer-events-none`
+- Same `top` / `bottom` as the hairline
+- Inline style: `background: 'linear-gradient(to right, transparent 0%, rgba(191,140,96,0.07) 50%, transparent 100%)'`
+- No animation — it's ambient
+
+This glow prevents the hairline from reading as a harsh digital line. It gives the axis a candlelit aura.
+
+### Mobile Adaptation
+
+On mobile, the axis is subtler — reduced height range and lower peak opacity:
+
+```jsx
+// Mobile: top-[24%] bottom-[14%], peak opacity 0.2
+// Desktop: top-[18%] bottom-[10%], peak opacity 0.35
+```
+
+The axis must NOT extend behind the eyebrow label or trust micro-text on mobile — the vertical space is tighter, and the line should frame only the headline + supporting line + CTA zone.
+
+### `prefers-reduced-motion`
+
+When `true`: render the axis at final state (`scaleY: 1, opacity: 1`) immediately. Skip the draw-down animation.
+
+---
+
+## Animation & Motion Specification
+
+### Scroll-Triggered Pattern
+
+Use Framer Motion's `useInView` on a section-level ref:
+
+```jsx
+const sectionRef = useRef(null);
+const isInView = useInView(sectionRef, { once: true, amount: 0.35 });
+```
+
+`amount: 0.35` — triggers when 35% of the fold is in view. Later than Folds 2/3 because this fold is SHORTER (`min-h-[85vh]` vs. `min-h-screen`), so 35% ensures the visitor has genuinely arrived, not just glimpsed the top.
+
+### Entrance Choreography
+
+This is the most deliberate, slowest-paced entrance of any fold — the interstitial EARNS attention, it doesn't fade in quickly.
+
+| Element | Initial | Animate (on inView) | Duration | Delay | Easing |
+|---|---|---|---|---|---|
+| Vertical axis hairline | `scaleY: 0, opacity: 0` | `scaleY: 1, opacity: 1` | 1400ms | 200ms | `[0.22, 1, 0.36, 1]` |
+| Eyebrow group (tick + label) | `opacity: 0, y: 12` | `opacity: 1, y: 0` | 700ms | 400ms | `[0.22, 1, 0.36, 1]` |
+| Giant headline | `opacity: 0, y: 50` | `opacity: 1, y: 0` | 1200ms | 700ms | `[0.22, 1, 0.36, 1]` |
+| Supporting line | `opacity: 0, y: 25` | `opacity: 1, y: 0` | 900ms | 1100ms | `[0.22, 1, 0.36, 1]` |
+| CTA pill | `opacity: 0, y: 20, scale: 0.95` | `opacity: 1, y: 0, scale: 1` | 900ms | 1400ms | `[0.22, 1, 0.36, 1]` |
+| Trust micro-text | `opacity: 0` | `opacity: 1` | 700ms | 1700ms | `easeOut` |
+
+**Total choreography runtime: ~2.4 seconds.** This is longer than the hero's ~1.5s because interstitials should feel composed, not snappy. The visitor has just scrolled through a manifesto; Fold 4 lets them settle before presenting the decision.
+
+**Why the axis animates first:** The hairline drawing from top to bottom physically "opens" the fold — it's the ceremonial gesture that says "this section is establishing itself." Every subsequent element appears within the frame the axis has drawn.
+
+**Why the headline has a 700ms delay:** It gives the axis time to traverse most of its height before the headline settles in. The two animations overlap but the axis leads. This creates the feeling of the fold building itself around the declaration.
+
+### Mobile vs. Desktop Motion
+
+- **Mobile (`< 1024px`):** Opacity-only fades on all entrances (remove `y` translations). Keep the axis `scaleY` animation (it's vertical and doesn't cause layout shift). Keep stagger timing.
+- **Desktop (`lg:+`):** Full choreography as specified.
+- **`prefers-reduced-motion`:** Skip all entrance animations (render final state), skip axis draw-down (render at `scaleY: 1`), skip CTA shimmer animation.
+
+### Framer Motion Implementation Pattern
+
+```jsx
+const prefersReducedMotion = typeof window !== 'undefined' 
+  ? window.matchMedia('(prefers-reduced-motion: reduce)').matches 
+  : false;
+
+const [isMobile, setIsMobile] = useState(true);
+
+useEffect(() => {
+  const check = () => setIsMobile(window.innerWidth < 1024);
+  check();
+  window.addEventListener('resize', check);
+  return () => window.removeEventListener('resize', check);
+}, []);
+
+// Example element:
+
+```
+
+Setting `initial={false}` under reduced motion skips animation entirely.
+
+---
+
+## Atmospheric & Visual Effects
+
+The atmosphere in Fold 4 is pushed deeper than any prior fold. Four layered elements work together to create the "deepest chamber of the cellar" feeling.
+
+### Atmospheric Layer Stack (absolute, pointer-events-none, z-0)
+
+**Layer A — Radial edge vignette (pushes edges to black):**
+```jsx
+
+```
+This is the most aggressive vignette on the page — the `transparent 25%` starting point creates a darker center-to-edge gradient than Fold 1's `transparent 30%`. The edges of Fold 4 should be near-pitch-black. The visitor's eye is funneled hard toward the center.
+
+**Layer B — Wine-red heartbeat (center, the signature presence):**
+```jsx
+
+```
+At `0.09` opacity, this is pushed to the Master ceiling — intentionally. Fold 4 is where the wine-red is allowed its strongest ambient presence. It's the warmth of the room, the knowledge that wine is being decided on.
+
+**Layer C — Clay warmth (lower-right, asymmetric balance):**
+```jsx
+
+```
+Prevents the fold from feeling perfectly symmetrical. A reflection of oak-barrel warmth pooling in one corner.
+
+**Layer D — Gold axis glow (vertical strip softener):**
+```jsx
+
+```
+The soft halo behind the vertical hairline axis (described in the axis section). Stitches the hairline into the wine-dark atmosphere so it never reads as a sterile digital line.
+
+### Grain Texture
+
+Procedural SVG noise, consistent with prior folds. **Unique filter id required** to avoid SVG filter collisions with Folds 1, 2, 3:
+
+```jsx
+
+  
+    
+  
+  
+
+```
+
+### Hairline Seams (top and bottom)
+
+Continuing the page-wide convention — gold gradient lines mark fold boundaries:
+
+```jsx
+{/* Top seam — from Fold 3 */}
+
+
+{/* Bottom seam — to Fold 5 */}
+
+```
+
+---
+
+## Micro-interactions
+
+### Text Selection Styling
+
+Continuing the page-wide convention. Add to `<style>` block:
+
+```css
+::selection {
+  background-color: rgba(191, 140, 96, 0.25);
+  color: #D9BBA9;
+}
+```
+
+### CTA Pill — Full Interaction Table
+
+| State | Visual Change | Timing |
+|---|---|---|
+| Rest | Gold fill, `ring-[#BF8C60]/25`, icons static | — |
+| Desktop hover | Shimmer sweep activates, bg warms to `#D9BBA9`, ring to `/50`, scale 1.02, shadow halo, leading icon scales 110%, trailing icon translates up-right | 500ms, `ease-out` |
+| Focus-visible | Gold ring offset-4 against wine-black | instant |
+| Mobile tap | Scale 0.97, bg shifts to `#8C3D20` | 150ms |
+| Post-click | Navigates to WhatsApp in new tab — no visual feedback needed | — |
+
+### CTA Shimmer Edge (subtlety is the point)
+
+The shimmer is a **2.4-second infinite horizontal gradient sweep** that only becomes visible on hover. When inactive, the CTA is a calm solid gold pill. When hovered, a ghost of light travels its edge. The effect should be SO subtle that a casual viewer notices it subliminally rather than seeing it outright. If the effect is obvious, reduce the gradient opacity.
+
+```css
+@keyframes shimmer {
+  0% { background-position: -100% 0; }
+  100% { background-position: 200% 0; }
+}
+```
+
+Apply via `animation: shimmer 2.4s ease-in-out infinite` on the absolute-positioned shimmer layer inside the pill. Set `mix-blend-mode: overlay` so the shimmer interacts with the gold beneath rather than overlaying it flatly.
+
+---
+
+## Responsive Behavior
+
+### Mobile (default — 375px baseline, PRIMARY design target)
+
+- Section: `min-h-[85vh]`, `py-24 px-6`
+- Root container: full-width with `px-6`
+- Eyebrow: `text-[10px]`, `tracking-[0.3em]` (reduced from desktop's `0.35em`)
+- Vertical tick: `w-px h-2.5` (slightly shorter)
+- Giant headline: `text-5xl`, `leading-[0.98]`, `max-w-[14ch]`
+- Supporting line: `text-base`, `max-w-[34ch]`, `px-2`
+- CTA: `w-full py-4 text-base`, `px-8`
+- CTA icons: leading `size={18}`, trailing `size={16}`
+- Trust micro-text: `text-xs`, `tracking-[0.1em]`
+- Vertical axis: `top-[24%] bottom-[14%]`, peak opacity `0.2`, width `w-px` (unchanged)
+- Axis glow: `w-12`
+- Atmospheric heartbeat: `w-[80vw] h-[60vh]`
+- Entrance animations: opacity-only fades
+- Shimmer: disabled on mobile (no hover)
+- Gap rhythm: eyebrow→headline `mb-8`, headline→supporting `mt-8`, supporting→CTA `mt-10`, CTA→trust `mt-4`
+
+### Small Mobile (≤ 360px — iPhone SE)
+
+- Headline: consider `text-[2.75rem]` if `text-5xl` overflows
+- Supporting line: `text-sm`
+- CTA: `py-3.5 text-sm`
+
+### Tablet (`md:` — 768px)
+
+- Section: `md:py-32`
+- Giant headline: `md:text-7xl`
+- Supporting line: `md:text-lg`
+- CTA: `md:w-auto md:px-10 md:py-5`
+- Eyebrow: `md:tracking-[0.35em]`
+
+### Desktop (`lg:` — 1024px)
+
+- Section: `lg:min-h-[90vh] lg:py-40`
+- Root container: `lg:px-12`
+- Giant headline: `lg:text-8xl`
+- Supporting line: `lg:text-xl`, `lg:max-w-3xl`
+- CTA: `lg:px-12 lg:py-6 lg:text-lg`
+- CTA icons: leading `lg:size={20}`, trailing `lg:size={18}`
+- Vertical axis: `lg:top-[18%] lg:bottom-[10%]`, peak opacity `0.35`
+- Axis glow: `lg:w-24`
+- Atmospheric heartbeat: `lg:w-[900px] lg:h-[650px]`
+- Full entrance choreography with y-translations
+- Shimmer effect enabled on hover
+- Gap rhythm: eyebrow→headline `lg:mb-14`, headline→supporting `lg:mt-14`, supporting→CTA `lg:mt-16`, CTA→trust `lg:mt-6`
+
+### Large Desktop (`xl:` — 1280px+)
+
+- Giant headline: `xl:text-[9rem]` — the peak scale, larger than any prior fold
+- Content max-width: `max-w-5xl` (unchanged — intentionally intimate even at wide viewports)
+
+---
+
+## Configuration Constants (top of component file)
+
+```jsx
+// ============================================
+// CONFIGURATION
+// ============================================
+const WHATSAPP_URL = "https://wa.me/5500000000000?text=Ol%C3%A1!%20Quero%20criar%20minha%20pr%C3%B3pria%20marca%20de%20vinhos%20com%20a%20Adega%20Pr%C3%B3pria.";
+```
+
+No images in this fold — nothing else to configure. The headline is the only visible content of substance.
+
+---
+
+## Quality Checklist
+
+Verify before marking complete:
+
+**Visual & Brand:**
+- [ ] Primary canvas is `#1A0F10` (wine-black), NOT `#012626` (green-black)
+- [ ] This fold reads as DARKER than Folds 1, 2, 3 — the edges push toward pitch black
+- [ ] Visual weight distribution: `#1A0F10` 50–58%, wine-red `#A62C21` 10–14% (pushed from 8–12% baseline), gold `#BF8C60` 3–5% (rarer than baseline)
+- [ ] Gold appears in EXACTLY three loci: italic "merece", CTA pill, vertical axis hairline (+ its soft glow)
+- [ ] No generic gradients — all use brand hex values
+- [ ] No emoji anywhere
+- [ ] Only TWO Lucide icons: `MessageCircle` (leading) and `ArrowUpRight` (trailing) — both inside the CTA
+- [ ] No image. No card. No split layout. No secondary CTA.
+- [ ] Feels like walking into the deepest chamber of the cellar, not a conversion section
+
+**Typography:**
+- [ ] Fraunces loaded, rendering on the giant headline
+- [ ] Headline uses weight 400 (not 700 — Fold 4 is meditative declaration, not shout)
+- [ ] Headline is the LARGEST type on the landing page (`xl:text-[9rem]`)
+- [ ] "merece" in Fraunces italic + `#BF8C60` gold
+- [ ] DM Sans loaded for eyebrow, supporting line, trust micro-text, CTA text
+- [ ] Custom `::selection` style matches wine-dark palette
+
+**Eyebrow (new convention):**
+- [ ] Vertical tick (1px × 12px gold) + "A DECISÃO" label
+- [ ] Tick is a separate `<span>` element, not a Unicode character
+- [ ] Styled distinctly from Folds 1 (interpuncts) and 2/3 (em-dash flanks)
+- [ ] Color `text-[#BF8C60]/70`, tracking `0.35em`, uppercase
+
+**Vertical Gold Hairline Axis (signature element):**
+- [ ] Positioned at `left-1/2 -translate-x-1/2`, runs from `top-[18%]` (desktop) to `bottom-[10%]` (desktop)
+- [ ] Gradient with soft ends (transparent → `rgba(191,140,96,0.35)` peak → transparent)
+- [ ] Peak opacity 0.35 desktop, 0.2 mobile
+- [ ] `scaleY` entrance animation from 0 to 1 over 1.4s with signature easing
+- [ ] `transformOrigin: 'top center'` — draws from top downward
+- [ ] Accompanying soft vertical glow strip (`rgba(191,140,96,0.07)`) prevents harsh line feel
+- [ ] Line does NOT extend behind eyebrow or trust micro-text on mobile
+
+**CTA Pill:**
+- [ ] Reads "Crie Sua Marca Agora"
+- [ ] Wired to `WHATSAPP_URL` with `target="_blank" rel="noopener noreferrer"`
+- [ ] Larger than Fold 1's CTA (`px-10 py-5 lg:px-12 lg:py-6`)
+- [ ] Leading `<MessageCircle />` + trailing `<ArrowUpRight />`, both `strokeWidth={1.5}`
+- [ ] Base ring `/25`, hover ring `/50` (more present than Fold 1's `/20` → `/40`)
+- [ ] Hover shimmer animation (`2.4s ease-in-out infinite`) with `mix-blend-mode: overlay`
+- [ ] Shimmer opacity-0 at rest, opacity-100 on group-hover
+- [ ] Shimmer disabled on mobile (no hover)
+- [ ] Hover: bg → `#D9BBA9`, scale 1.02, shadow halo, ring intensifies
+- [ ] Leading icon scales 110% on hover
+- [ ] Trailing icon translates up-and-right on hover (outward motion)
+- [ ] Mobile tap: scale 0.97, bg → `#8C3D20`
+- [ ] Focus-visible ring with `offset-4` against wine-black
+
+**Trust Micro-text (new convention — contractual, not atmospheric):**
+- [ ] Reads "Resposta em até 2 horas · Segunda a Sábado"
+- [ ] Sentence case (not uppercase)
+- [ ] Tracking `0.15em` (not the `0.3em` of eyebrows)
+- [ ] `text-[#D9BBA9]/45` — whisper weight
+- [ ] Positioned tight to CTA (`mt-5 lg:mt-6`)
+
+**Atmospheric Glow Opacity (Master 0.04–0.10 ceiling for ambient):**
+- [ ] Wine-red heartbeat: 0.09 ✓ (pushed to ceiling — signature of this fold)
+- [ ] Clay warmth lower-right: 0.05 ✓
+- [ ] Gold axis glow: 0.07 ✓
+- [ ] Edge vignette: 0.6 (acceptable — this is black pushing to edges, not a color glow)
+- [ ] No ambient color glow exceeds 0.10
+- [ ] CTA hover glow 0.30 + shimmer 0.4 are interaction-bound (acceptable)
+
+**Motion:**
+- [ ] Scroll-triggered via `useInView` at `amount: 0.35`
+- [ ] Signature easing `[0.22, 1, 0.36, 1]` used throughout
+- [ ] Vertical axis animates FIRST (draws from top, 1.4s)
+- [ ] Entrance stagger: axis → eyebrow → headline → supporting → CTA → trust
+- [ ] Headline has 700ms delay — axis leads, headline settles after
+- [ ] Total choreography ~2.4s (slower than prior folds — interstitials are composed)
+- [ ] `prefers-reduced-motion` fully respected (no axis draw, no stagger, no shimmer)
+- [ ] Mobile entrances are opacity-only (no y-translations)
+
+**Technical:**
+- [ ] Single `.jsx` file, `export default`
+- [ ] No `localStorage` or `sessionStorage`
+- [ ] Inline styles only for complex gradients (radial vignettes, shimmer gradient, axis gradient)
+- [ ] All visible text in Brazilian Portuguese
+- [ ] No horizontal overflow at 375px
+- [ ] Unique SVG filter id (`fold4Grain`) to avoid collisions
+- [ ] Component fully self-contained — no external utility imports beyond React, Framer Motion, Lucide
+- [ ] Section has `id="fold-4"` for smooth-scroll anchoring
+- [ ] Top and bottom hairline seams present
+
+**The Interstitial Test:**
+- [ ] Would this stop a visitor mid-scroll?
+- [ ] Does the page physically shift register from storytelling to invitation?
+- [ ] Does "merece" carry the emotional weight of the entire sales thesis?
+- [ ] Does the vertical axis feel ceremonial and necessary, not decorative?
+- [ ] Is the CTA unambiguously the primary act — no competing elements?
+- [ ] Would you be proud to screenshot at 375px and post on Dribbble?
+- [ ] Would you be proud to screenshot at 1440px and post on Dribbble?
+- [ ] Reads as WINE-DARK (the darkest fold on the page), not green-dark?
