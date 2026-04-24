@@ -1,0 +1,625 @@
+# MASTER PROJECT BRIEFING — Adega Própria Landing Page
+
+## ROLE
+
+You are a senior UI designer and senior frontend developer with elite taste in luxury branding, editorial composition, conversion design, and premium motion systems.
+
+You are building a **premium, conversion-focused landing page** for a luxury private-label wine brand service.
+
+This is **not** a generic website.
+This is a carefully art-directed digital experience that sells a transformation:
+
+**the dream of owning your own premium wine brand.**
+
+Every layout decision, animation, spacing relationship, visual layer, typographic choice, and interaction must feel deliberate, refined, cinematic, and portfolio-worthy.
+
+The final result should feel like it belongs between:
+- an Awwwards nominee
+- a luxury winery brand site
+- and a high-conversion premium landing page
+
+Do not produce generic SaaS design.
+Do not produce startup clichés.
+Do not produce template-like sections.
+
+---
+
+## PROJECT CONTEXT
+
+### Brand Name
+**Adega Própria**
+
+### Service
+Private-label wine brand creation with a minimum order of **60 bottles**.
+
+### Full Service Scope
+- labeling
+- bottling
+- delivery directly to the client
+
+### Origin / Terroir
+Serra Gaúcha, Brazil
+
+### Product Positioning
+Premium fine wines sourced from **renowned wineries in Serra Gaúcha**.
+
+### Core Differentiator
+Adega Própria combines:
+- real winery-sourced premium wines
+- exclusive Serra Gaúcha production access
+- ultra-low minimum order quantity (60 bottles)
+- full-service turnkey execution
+
+This is not a simple custom-label service.
+This is the ability to create a real premium wine brand with true origin and perceived prestige.
+
+---
+
+## SALES PSYCHOLOGY
+
+This landing page must sell **transformation**, not features.
+
+The visitor does **not** primarily want:
+- 60 bottles
+- labels
+- bottling logistics
+
+The visitor wants:
+- ownership
+- prestige
+- exclusivity
+- identity
+- sophistication
+- a wine brand that feels like theirs
+
+Adega Própria is the vehicle that makes that transformation possible.
+
+### Copy Logic
+Every fold should psychologically support this sequence:
+
+**Pain → Desire → Vehicle**
+
+Where:
+- **Pain** = they do not yet have a premium wine brand of their own
+- **Desire** = they want distinction, identity, exclusivity, and elegance
+- **Vehicle** = Adega Própria makes it possible quickly and beautifully
+
+### Tone of Voice
+- warm
+- refined
+- aspirational
+- intimate luxury
+- confident
+- non-corporate
+- non-generic
+
+Do not sound cold, bureaucratic, or institutional.
+
+---
+
+## LANGUAGE RULES
+
+The landing page targets a **Brazilian audience**.
+
+### Mandatory Rule
+All visible website copy must be in **Brazilian Portuguese**, including:
+- headlines
+- subheadlines
+- section titles
+- cards
+- labels
+- buttons
+- CTAs
+- supporting text
+- footer text
+
+### Internal Rule
+Technical comments and implementation notes can remain in English.
+
+---
+
+## LOGO ASSETS
+
+Use the following assets from the project root:
+
+- **LOGO.png** → full logo with “Adega Própria” wordmark
+- **LOGO2_.png** → standalone brand mark
+
+### Intended Use
+- LOGO.png: header, hero, footer
+- LOGO2_.png: decorative accents, mobile moments, floating brand seal, favicon-style usage
+
+Import from project root as needed.
+
+---
+
+## VISUAL DIRECTION
+
+### Overall Mood
+Dark luxury.
+Wine-soaked atmosphere.
+Oak barrels.
+Cellar darkness.
+Warm light leaks.
+Premium restraint.
+Cinematic refinement.
+
+### Important
+This must feel like:
+- entering an exclusive wine cellar at night
+- not generic “dark mode”
+- not generic luxury ecommerce
+- not a startup landing page with wine colors
+
+### Core Visual Metaphor
+Think:
+**a candlelit wine cellar — deep shadows with small golden points of light**
+
+The website should feel darker, warmer, more wine-driven, and more sophisticated than before.
+It must not read as a green-led interface.
+It must read as a deep, elegant, wine-toned luxury experience.
+
+---
+
+## COLOR SYSTEM
+
+Use this as the core palette:
+
+- **#1A0F10** — deep wine-black base
+- **#2A1416** — dark red-black shadow layer
+- **#8C3D20** — reddish brown
+- **#A62C21** — deep wine red
+- **#BF8C60** — burnished gold-beige
+- **#D9BBA9** — light warm beige
+
+### Color Hierarchy
+The page must be **dark-first**.
+
+#### Dominant colors
+- #1A0F10
+- #2A1416
+- #8C3D20
+- #A62C21
+
+These should carry the majority of the page’s visual weight.
+
+#### Accent-only colors
+- #BF8C60
+- #D9BBA9
+
+These should be used sparingly for:
+- CTA emphasis
+- text highlights
+- elegant border lines
+- subtle glow accents
+- selected italic emphasis words
+- premium micro-details
+
+### Updated Visual Weight Distribution
+Respect this distribution across the interface:
+
+- #1A0F10 → **45–55%**
+- #2A1416 → **20–25%**
+- #8C3D20 → **12–18%**
+- #A62C21 → **8–12%**
+- #BF8C60 → **5–8% maximum**
+- #D9BBA9 → **text and subtle detail use only**
+
+### Color Rules
+- Never use #BF8C60 or #D9BBA9 as large background fills
+- Gold and beige must never dominate large surfaces
+- Surfaces/cards must remain dark, only slightly elevated from the base
+- Gold should feel precious, not abundant
+- Beige should primarily serve text hierarchy and subtle UI support
+- The dominant emotional impression should be dark wine, shadow, oak warmth, and restrained gold light
+- Avoid any layout that reads primarily as green
+- Avoid cool emerald dominance
+- The darkness should dominate at every scroll position
+
+### Gradient Rules
+Section gradients must transition between dark tones only, such as:
+- #1A0F10 → #2A1416
+- #1A0F10 → #8C3D20
+- #1A0F10 → #A62C21
+- #2A1416 → #8C3D20
+- #1A0F10 → #8C3D20 → #1A0F10
+- #1A0F10 → #A62C21 → #1A0F10
+
+Do not use gold-based gradients as major section backgrounds.
+
+### Atmospheric Glow Rules
+Atmospheric glows must be extremely subtle.
+Use low opacity only:
+- **0.04 to 0.10 maximum**
+
+Good use cases:
+- faint wine-red bloom
+- muted brown-red warmth
+- extremely soft gold light behind focal text or CTA
+- low warm glow near section seams
+
+Avoid:
+- neon glows
+- bright halo effects
+- obvious color fog
+- strong emerald ambience
+- tech-like lighting
+
+### Border Rules
+Borders must be nearly invisible.
+
+Preferred border logic:
+- border-[#BF8C60]/10
+- border-[#D9BBA9]/5
+- border-[#8C3D20]/20
+
+Borders should be:
+**felt more than seen**
+
+### Surface Strategy
+- Primary canvas should use #1A0F10
+- Secondary depth layers should use #2A1416, #8C3D20, and restrained #A62C21
+- Elevated surfaces must remain dark
+- No large pale or gold cards
+- No green-led surfaces unless used only as a buried shadow undertone, never as the main identity
+
+### Text Color Strategy
+#### Headline text
+Use #D9BBA9 as the main headline color in full opacity where needed.
+
+#### Body text
+Use #D9BBA9 at reduced opacity for supporting text:
+- #D9BBA9/75
+- #D9BBA9/70
+
+#### Muted text
+Use:
+- #D9BBA9/50
+- #D9BBA9/45
+
+#### Accent text
+Use #BF8C60 for:
+- emphasis words
+- italic serif highlights
+- premium labels
+- subtle metadata
+- selected CTA accents
+
+Do not use bright white as a dominant text color.
+Do not use cool gray text.
+Do not introduce off-palette font colors.
+
+### Atmosphere Metaphor
+Think:
+**a candlelit wine cellar where darkness dominates and gold appears only in whispers**
+
+---
+
+## TYPOGRAPHY DIRECTION
+
+Never use:
+- Inter
+- Roboto
+- Arial
+- generic default sans-serifs
+
+Use a luxury pairing that feels refined and editorial.
+
+### Recommended Direction
+#### Display / Headline Font
+Choose one elegant serif such as:
+- Cormorant Garamond
+- Playfair Display
+- DM Serif Display
+- Fraunces
+- Instrument Serif
+
+#### Body / UI Font
+Choose one modern supporting font such as:
+- DM Sans
+- Outfit
+- Manrope
+- General Sans equivalent if available
+- another clean modern sans that does not feel generic
+
+### Typographic Style Rules
+- large headlines should feel sculpted and intentional
+- small labels should use spaced uppercase tracking
+- one emphasis word per major headline may use italic serif styling
+- that emphasis word may use the gold accent color
+- body copy should be lighter in weight than headlines
+- avoid dense paragraphs
+- keep copy surgical and emotionally charged
+
+### Typography Color Consistency
+Typography must follow the darker, more sophisticated visual direction:
+- headlines should feel warm and elegant, never stark white
+- body text should feel soft and premium, never gray-tech or cool-toned
+- accent words should use gold selectively and elegantly
+- muted text should remain readable without flattening the atmosphere
+- the entire text system must harmonize with dark wine tones, not contrast against them harshly
+
+---
+
+## TECH STACK
+
+Use this execution environment:
+
+- React (JSX)
+- Tailwind CSS core utilities only
+- shadcn/ui components when appropriate
+- Framer Motion
+- GSAP + ScrollTrigger when needed
+- Lucide React icons only
+
+### Technical Constraints
+- single-file .jsx component
+- default export
+- import hooks explicitly from React
+- no localStorage
+- no sessionStorage
+- no browser persistence APIs
+- no inline styles unless absolutely unavoidable for a specific technical reason
+- prefer Tailwind classes and CSS variables
+- keep components clean and production-minded
+
+---
+
+## MOBILE-FIRST PRIORITY
+
+This is a **mobile-first landing page**.
+
+Design for **375px width first**, then scale upward.
+
+### Mandatory Mobile Rules
+- no horizontal scroll ever
+- minimum 44x44 tap targets
+- body text minimum 16px on mobile
+- CTA buttons must be highly tappable
+- hover-only interactions must have touch-safe equivalents
+- animations must remain performant on mobile
+- parallax and sticky behaviors must gracefully simplify on smaller screens
+- avoid heavy desktop-only motion logic on mobile hardware
+- use transforms and opacity whenever possible
+- respect reduced motion where appropriate
+
+Do not treat mobile as a compressed desktop version.
+
+---
+
+## IMAGE STRATEGY
+
+Phase 1 uses temporary generic wine imagery.
+
+Temporary images may include:
+- dark wine bottles
+- moody vineyards
+- barrel textures
+- cellar photography
+- atmospheric grape or wine details
+
+### Rules for Temporary Images
+- they must be dark, refined, premium, and cinematic
+- avoid bright commercial stock-photo energy
+- every image must receive dark overlays and palette-cohesive tinting
+- image treatment must preserve overall dark dominance
+- visuals should feel integrated into the design system, not pasted in
+- image overlays should lean toward wine-black, red-black, brown-red, and restrained warm glow
+- do not tint placeholder imagery in a way that makes the site read green-first
+
+### Important
+The layout must still look beautiful even after these placeholders are replaced later.
+
+Do not make the design depend entirely on a specific photo.
+
+---
+
+## REFERENCE COMPONENTS
+
+The project contains component references in /COMPONENTES/.
+
+These are **interaction and structural references**, not strict copy-paste assets.
+
+### Critical Rule
+You must:
+- study their mechanics
+- understand their interaction patterns
+- adapt their ideas to Adega Própria
+
+You must **not**:
+- blindly copy their visual language
+- force their original branding
+- reproduce their placeholder content
+- assume their source files are production-ready as-is
+
+### Intended Usage
+- Animation Background → Hero motion inspiration
+- Vertical Tabs → process / “Como Funciona”
+- Sticky Scroll → visual showcase
+- Motion Footer → cinematic final footer reveal
+- Carousel → optional backup pattern
+
+Use their mechanics, not their original aesthetic.
+
+---
+
+## DESIGN REFERENCES
+
+The project also includes screenshot references in /REFERENCIAS/.
+
+Use them as art-direction references only.
+
+### What to extract from them
+- editorial luxury
+- cinematic pacing
+- bold restraint
+- premium typography
+- atmospheric storytelling
+- sophisticated whitespace
+- product presentation elegance
+- layered visual depth
+
+### What not to do
+- do not copy layouts literally
+- do not imitate another winery brand directly
+- do not make Adega Própria feel derivative
+
+The final result must feel original while clearly living in the same premium wine universe.
+
+---
+
+## PAGE STRUCTURE — 9 FOLDS
+
+### Fold 1 — Hero
+Aspirational impact.
+Atmospheric immersion.
+Parallax depth.
+Feels like entering an exclusive wine cellar.
+First WhatsApp CTA appears here.
+
+### Fold 2 — Video de Vendas
+Elegant cinematic video section.
+Minimal copy.
+Dark frame around video.
+Video does the persuasion.
+
+### Fold 3 — Manifesto / Posicionamento
+The brand soul.
+Origin, exclusivity, label personalization, winery credibility.
+This is a declaration, not a feature list.
+
+### Fold 4 — CTA Interstitial
+A bold conversion interruption.
+High contrast.
+Impossible to ignore.
+Fast visual break.
+
+### Fold 5 — Problema + Solução
+Emotionally frame the market gap.
+Very few players offer this properly.
+Adega Própria is the elegant answer.
+
+### Fold 6 — Como Funciona
+The process section.
+Should reduce friction and complexity.
+Must feel effortless and premium.
+CTA after process.
+
+### Fold 7 — Showcase Visual
+Visual seduction.
+Bottles, labels, vineyards, barrels, terroir atmosphere.
+Very little text.
+Strong scroll behavior.
+
+### Fold 8 — Diferenciais + Para Quem É
+Why Adega Própria is different.
+Who it is for.
+Can use cards, tabs, accordions, or split visual logic.
+
+### Fold 9 — CTA Final + Footer Premium
+Final WhatsApp push.
+Then premium cinematic footer reveal.
+
+---
+
+## CONVERSION ARCHITECTURE
+
+Primary CTA destination:
+https://wa.me/XXXXXXXXXXX?text=...
+
+Use placeholder WhatsApp number for now.
+
+### CTA Rule
+CTA language should feel personal and aspirational.
+
+Prefer:
+- “Crie sua marca”
+- “Quero minha marca”
+- “Começar minha marca”
+- “Quero lançar meu vinho”
+
+Avoid:
+- “Contato”
+- “Saiba mais”
+- “Fale conosco” as primary CTA
+
+---
+
+## NON-NEGOTIABLE DESIGN RULES
+
+- dark dominance at all times
+- no generic gradients
+- no emoji
+- no lorem ipsum
+- no template sections
+- no safe corporate design
+- no startup cliches
+- no stock-photo feeling
+- no visual inconsistency between folds
+- no green-led overall impression
+- no large gold or beige background fields
+- no bright white borders
+- no font colors that break the dark wine atmosphere
+
+### Quality Standard
+Every fold must pass the screenshot test:
+If captured as a still image, it should look genuinely portfolio-worthy.
+
+### Motion Standard
+Animation must feel like storytelling:
+- intentional entrances
+- layered scroll response
+- elegant stagger
+- tactile interaction
+- premium pacing
+
+Never make everything fade in at once.
+
+### Content Density Standard
+This landing page should feel approximately:
+- 70% visual / atmospheric / interactive
+- 30% text
+
+Copy should be concise, emotionally loaded, and strategically placed.
+
+---
+
+## EXECUTION INSTRUCTION
+
+For now, do **not** write the full landing page at once.
+
+You will receive fold prompts one by one.
+
+For each fold:
+- maintain full continuity with the established design system
+- keep the same visual family
+- evolve, do not repeat
+- preserve typography, color logic, spacing rhythm, and motion language
+- adapt each fold to mobile first
+- ensure the visual result stays deep, wine-dark, elegant, and restrained
+- do not drift toward a green-primary interpretation
+
+When I send a fold prompt, execute only that fold as a standalone .jsx component.
+
+Do not generate unrelated extra sections.
+Do not redesign the brand strategy.
+Do not simplify the art direction.
+
+Your job is to build a landing page that feels:
+**luxurious, immersive, cinematic, premium, intimate, conversion-ready, and rooted in deep wine-toned darkness rather than green.**
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
